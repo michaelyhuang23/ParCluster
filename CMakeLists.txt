@@ -37,10 +37,11 @@ add_subdirectory(src)
 add_subdirectory(tests)
 
 # -------------------------------------------------
-# Expose parclusterLib
 
 project(parclusterLib)
 
 add_library(parclusterLib INTERFACE)
 
 target_include_directories(parclusterLib INTERFACE include)
+
+
