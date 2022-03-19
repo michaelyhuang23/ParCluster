@@ -4,91 +4,10 @@
 #include "parlay/parallel.h"
 #include "parlay/sequence.h"
 #include "parlay/primitives.h"
-#include "parseCommandLine.h"
+#include "pargeo/parseCommandLine.h"
+#include "pargeo/pointIO.h"
 
 using namespace std;
-
-auto is_newline = [] (char c) {
-	switch (c)  {
-	case '\r': 
-	case '\n': return true;
-	default : return false;
-	}
-};
-
-auto is_delim = [] (char c) {
-	switch (c)  {
-	case '\t':
-	case ';':
-	case ',':
-	case ' ' : return true;
-	default : return false;
-	}
-};
-
-auto is_space = [] (char c) {
-	return is_newline(c) || is_delim(c) || c==0;
-};
-
-template <class Seq>
-parlay::sequence<char*> stringToWords(Seq &Str) {
-	size_t n = Str.size();
-
-	parlay::parallel_for(0, n, [&] (long i) {
-	if (is_space(Str[i])) Str[i] = 0;}); 
-
-	// mark start of words
-	auto FL = parlay::tabulate(n, [&] (long i) -> bool {
-	return (i==0) ? Str[0] : Str[i] && !Str[i-1];});
-
-	// offset for each start of word
-	auto Offsets = parlay::pack_index<long>(FL);
-
-	// pointer to each start of word
-	auto SA = parlay::tabulate(Offsets.size(), [&] (long j) -> char* {
-	return Str.begin() + Offsets[j];});
-
-	return SA;
-}
-
-parlay::sequence<char> readStringFromFile(char const *fileName) {
-	std::ifstream file (fileName, std::ios::in | std::ios::binary | std::ios::ate);
-	if (!file.is_open()) {
-		throw std::runtime_error("Unable to open file");
-	}
-	long end = file.tellg();
-	file.seekg (0, std::ios::beg);
-	long n = end - file.tellg();
-	parlay::sequence<char> bytes(n, (char) 0);
-	file.read (bytes.begin(), n);
-	file.close();
-	return bytes;
-}
-
-template <class pointT, class Seq>
-parlay::sequence<pointT> parsePoints(Seq W) {
-	using coord = double;
-	int d = pointT::dimsize;
-	size_t n = W.size()/d;
-	auto a = parlay::tabulate(d * n, [&] (size_t i) -> coord {
-				       return atof(W[i]);});
-	auto points = parlay::tabulate(n, [&] (size_t i) -> pointT {
-					return pointT(a.cut(d*i,d*(i + 1)-1), a[d*(i + 1)-1]);});
-	return points;
-}
-
-template <class pointT>
-parlay::sequence<pointT> readPointsFromFile(char const *fname) {
-	parlay::sequence<char> S = readStringFromFile(fname);
-	parlay::sequence<char*> W = stringToWords(S);
-	int d = pointT::dimsize;
-	if (W.size() == 0)
-		throw std::runtime_error("readPointsFromFile empty file");
-
-	return parsePoints<pointT>(W.cut(0,W.size()));
-}
-
-
 
 template<int _dim> class pointD { // point with density
 	// Internal declarations
@@ -196,13 +115,12 @@ public:
 
 
 int main(int argc, char* argv[]) {
-	using namespace parcluster;
 
-	commandLine P(argc, argv, "<inFile>");
+	pargeo::commandLine P(argc, argv, "<inFile>");
 	char* iFile = P.getArgument(0);
 
 	using point = pointD<2>;
-	parlay::sequence<point> ptrs = readPointsFromFile<point>(iFile);
+	parlay::sequence<point> ptrs = pargeo::pointIO::readPointsFromFile<point>(iFile);
 
 	cout<<"original points:"<<endl;
 	// for(int i=0;i<ptrs.size();i++)
