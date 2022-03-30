@@ -40,8 +40,12 @@ add_subdirectory(tests)
 
 project(parclusterLib)
 
+set(PARGEO_DIR "./external/ParGeo")
+set(PARLAY_DIR "./external/parlaylib")
+
 add_library(parclusterLib INTERFACE)
 
-target_include_directories(parclusterLib INTERFACE include)
+target_include_directories(parclusterLib INTERFACE ${PARLAY_DIR}/include)
 
-
+target_include_directories(parclusterLib
+INTERFACE ${PARGEO_DIR}/include)

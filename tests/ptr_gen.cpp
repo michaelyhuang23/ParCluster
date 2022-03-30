@@ -13,6 +13,6 @@ int main(int argc, char** argv){
 	double RANGE = 1000000;
 	double dRANGE = 5000;
 	for(int i=0;i<n;i++){
-		cout<<dRand(-RANGE, RANGE)<<" "<<dRand(-RANGE, RANGE)<<" "<<dRand(0, dRANGE)<<endl;
+		cout<<dRand(-RANGE, RANGE)<<" "<<dRand(-RANGE, RANGE)<<endl;
 	}
 }
