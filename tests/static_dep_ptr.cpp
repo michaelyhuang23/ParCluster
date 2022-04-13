@@ -22,7 +22,9 @@ int main(int argc, char* argv[]) {
 	pargeo::timer time;
 
 	pargeo::commandLine P(argc, argv, "<inFile>");
-	char* iFile = P.getArgument(0);
+	//char* iFile = P.getArgument(0);
+
+    char* iFile = "../../tests/example_point_cloud_dense.txt";
 
 	parlay::sequence<pointD> ptrs = pargeo::pointIO::readPointsFromFile<pointD>(iFile);
 
@@ -33,27 +35,30 @@ int main(int argc, char* argv[]) {
 	}
 	std::cout<<std::endl;
 
-	parlay::sort_inplace(ptrs, pointD::attComp);
+	parlay::sequence<pointD> sptrs = parlay::sort(ptrs, pointD::attComp);
 
 	int n = ptrs.size();
 
-	pargeo::pdKdTree::node<dim, point>* tree = pargeo::pdKdTree::build<dim, pointD>(ptrs, true, 16);
-	
 	parlay::sequence<int> depPtr(n);
 
-	for(int i=n-1;i>=0;i--){
-		
-	}
-
-	depPtr[n-1] = -1;
 
 	std::cout<<"preprocessing time: "<<time.get_next()<<std::endl;
 
-	for(int i=n-3;i>=0;--i){
-		auto ret = tree.kNN(ptrs[i], 1);
-		depPtr[i] = ret[0].attribute;
+	pargeo::pdKdTree::tree<dim, pointD>* root = pargeo::pdKdTree::build<dim, pointD>(sptrs, false, 16);
+	root->pargeo::pdKdTree::node<dim, pointD>::initSerial();
 
-		tree.insert(ptrs, i, i+1);
+	root->print_data();
+	
+	std::cout<<"construction time: "<<time.get_next()<<std::endl;
+
+	depPtr[n-1] = -1;
+	root->activateItem(n-1);
+	for(int i=n-2;i>=0;i--){
+		parlay::sequence<size_t> I = pargeo::pdKdTree::Knn<dim, pointD>(ptrs[i], 1, root);
+		assert(I.size() > 0);
+		depPtr[i] = I[0];
+
+		root->activateItem(i);
 	}
 
 	std::cout<<"insert+query time: "<<time.get_next()<<std::endl;

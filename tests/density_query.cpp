@@ -12,7 +12,7 @@
 #include "kdTree/kdTree.h"
 
 static const int dim = 2;
-static const double drange = 1000;
+static const double drange = 2;
 using point = pargeo::point<dim>;
 using pointD = pargeo::pointD<dim, int>;
 
