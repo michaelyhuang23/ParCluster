@@ -34,11 +34,6 @@ parlay::sequence<pointD> compute_densities(parlay::sequence<point>& ptrs){
 
 
 
-
-
-
-
-
 int main(int argc, char* argv[]) {
 	std::ios_base::sync_with_stdio(0);
 
