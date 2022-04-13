@@ -9,8 +9,7 @@
 #include "pargeo/pointIO.h"
 #include "pargeo/point.h"
 #include "pargeo/getTime.h"
-#include "kdTree/kdTree.h"
-#include "dynamicKdTree/dynKdTree.h"
+#include "pseudoDynamicKdTree/pdKdTree.h"
 
 static const int dim = 2;
 using point = pargeo::point<dim>;
@@ -20,7 +19,6 @@ using pointD = pargeo::pointD<dim, int>;
 int main(int argc, char* argv[]) {
 	std::ios_base::sync_with_stdio(0);
 
-	std::cout<<sizeof(typename pargeo::_empty)<<std::endl;
 	pargeo::timer time;
 
 	pargeo::commandLine P(argc, argv, "<inFile>");
@@ -39,19 +37,15 @@ int main(int argc, char* argv[]) {
 
 	int n = ptrs.size();
 
-	parlay::parallel_for(0, n, [&](int i){
-		ptrs[i].attribute = i;
-	});
-
-
-	assert(n >= 2);
-
-	pargeo::dynKdTree::rootNode<dim, pointD> tree(ptrs, n-2, n);
-
+	pargeo::pdKdTree::node<dim, point>* tree = pargeo::pdKdTree::build<dim, pointD>(ptrs, true, 16);
+	
 	parlay::sequence<int> depPtr(n);
 
+	for(int i=n-1;i>=0;i--){
+		
+	}
+
 	depPtr[n-1] = -1;
-	depPtr[n-2] = n-1;
 
 	std::cout<<"preprocessing time: "<<time.get_next()<<std::endl;
 
