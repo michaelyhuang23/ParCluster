@@ -22,15 +22,12 @@ int main(int argc, char* argv[]) {
 	pargeo::commandLine P(argc, argv, "<inFile>");
 	char* iFile = P.getArgument(0);
 
-    // char* iFile = "../../tests/example_point_cloud_dense.txt";
-
 	parlay::sequence<pointD> ptrs = pargeo::pointIO::readPointsFromFile<pointD>(iFile);
 
 	parlay::sort_inplace(ptrs, pointD::attComp);
 
-	parlay::sequence<pointD> sptrs(ptrs);
-
 	int n = ptrs.size();
+	parlay::sequence<pointD> sptrs(ptrs);
 
 	parlay::sequence<int> depPtr(n);
 
@@ -42,14 +39,34 @@ int main(int argc, char* argv[]) {
 	root->activateItem(n-1);
 	for(int i=n-2;i>=0;i--){
 		pointD* ptr = root->NearestNeighbor(i);
-		depPtr[i] = ptr->attribute;
+		if(ptr)
+			depPtr[i] = ptr->attribute;
+		else
+			depPtr[i] = -1;
 		root->activateItem(i);
 	}
 
-	// std::cout<<"insert+query time: "<<time.get_next()<<std::endl;
-
 	for(int i=0;i<n;i++){
-		std::cout<<ptrs[i][0]<<" "<<ptrs[i][1]<<":"<<ptrs[depPtr[i]][0]<<" "<<ptrs[depPtr[i]][1]<<std::endl;
+		std::cout<<i<<"  ;  "<<ptrs[i][0]<<" "<<ptrs[i][1]<<":"<<ptrs[depPtr[i]][0]<<" "<<ptrs[depPtr[i]][1]<<"  ;  "<<depPtr[i]<<std::endl;
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

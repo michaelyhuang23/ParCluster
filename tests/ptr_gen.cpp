@@ -9,8 +9,8 @@ double dRand(double fMin, double fMax){
 
 int main(int argc, char** argv){
 	srand(atoi(argv[1]));
-	int n = 40;
-	double RANGE = 10;
+	int n = 4;
+	double RANGE = 4;
 	for(int i=0;i<n;i++){
 		cout<<dRand(-RANGE, RANGE)<<" "<<dRand(-RANGE, RANGE)<<endl;
 	}

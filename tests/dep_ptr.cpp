@@ -54,9 +54,8 @@ int main(int argc, char* argv[]) {
 		tree.insert(ptrs, i, i+1);
 	}
 
-	// std::cout<<"insert+query time: "<<time.get_next()<<std::endl;
 	for(int i=0;i<n;i++){
-		std::cout<<ptrs[i][0]<<" "<<ptrs[i][1]<<":"<<ptrs[depPtr[i]][0]<<" "<<ptrs[depPtr[i]][1]<<std::endl;
+		std::cout<<i<<"  ;  "<<ptrs[i][0]<<" "<<ptrs[i][1]<<":"<<ptrs[depPtr[i]][0]<<" "<<ptrs[depPtr[i]][1]<<"  ;  "<<depPtr[i]<<std::endl;
 	}
 
 }
