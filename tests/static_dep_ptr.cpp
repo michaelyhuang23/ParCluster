@@ -19,10 +19,14 @@ using pointD = pargeo::pointD<dim, int>;
 int main(int argc, char* argv[]) {
 	std::ios_base::sync_with_stdio(0);
 
+	pargeo::timer time;
+
 	pargeo::commandLine P(argc, argv, "<inFile>");
 	char* iFile = P.getArgument(0);
 
 	parlay::sequence<pointD> ptrs = pargeo::pointIO::readPointsFromFile<pointD>(iFile);
+
+	time.start();
 
 	parlay::sort_inplace(ptrs, pointD::attComp);
 
@@ -35,6 +39,8 @@ int main(int argc, char* argv[]) {
 	pargeo::pdKdTree::tree<dim, pointD>* root = pargeo::pdKdTree::build<dim, pointD>(sptrs, true, 16);
 	root->pargeo::pdKdTree::node<dim, pointD>::initParallel();
 
+	std::cout<<"preprocessing time: "<<time.get_next()<<std::endl;
+
 	depPtr[n-1] = -1;
 	root->activateItem(n-1);
 	for(int i=n-2;i>=0;i--){
@@ -46,9 +52,11 @@ int main(int argc, char* argv[]) {
 		root->activateItem(i);
 	}
 
-	for(int i=0;i<n;i++){
-		std::cout<<i<<"  ;  "<<ptrs[i][0]<<" "<<ptrs[i][1]<<":"<<ptrs[depPtr[i]][0]<<" "<<ptrs[depPtr[i]][1]<<"  ;  "<<depPtr[i]<<std::endl;
-	}
+	std::cout<<"update query time: "<<time.get_next()<<std::endl;
+
+	// for(int i=0;i<n;i++){
+	// 	std::cout<<i<<"  ;  "<<ptrs[i][0]<<" "<<ptrs[i][1]<<":"<<ptrs[depPtr[i]][0]<<" "<<ptrs[depPtr[i]][1]<<"  ;  "<<depPtr[i]<<" ; "<<ptrs[i].dist(ptrs[depPtr[i]])<<std::endl;
+	// }
 
 }
 
