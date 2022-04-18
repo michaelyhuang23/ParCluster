@@ -7,6 +7,7 @@ add_executable(test_parlay test_parlay.cpp)
 add_executable(density_query density_query.cpp)
 add_executable(dep_ptr dep_ptr.cpp)
 add_executable(static_dep_ptr static_dep_ptr.cpp)
+add_executable(static_dep_ptr_v1 static_dep_ptr_v1.cpp)
 
 target_link_libraries(test_parlay
   parclusterLib
@@ -21,5 +22,9 @@ target_link_libraries(dep_ptr
   )
 
 target_link_libraries(static_dep_ptr
+  parclusterLib
+  )
+
+target_link_libraries(static_dep_ptr_v1
   parclusterLib
   )
