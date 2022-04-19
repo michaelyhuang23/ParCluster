@@ -8,6 +8,8 @@ add_executable(density_query density_query.cpp)
 add_executable(dep_ptr dep_ptr.cpp)
 add_executable(dep_ptr_brute dep_ptr_brute.cpp)
 add_executable(static_dep_ptr static_dep_ptr.cpp)
+add_executable(uniform_generator uniform_generator.cpp)
+add_executable(seedspread_generator seedspread_generator.cpp)
 
 target_link_libraries(test_parlay
   parclusterLib
@@ -28,3 +30,16 @@ target_link_libraries(dep_ptr
 target_link_libraries(static_dep_ptr
   parclusterLib
   )
+
+target_link_libraries(uniform_generator
+  parclusterLib
+  )
+
+target_link_libraries(seedspread_generator
+  datasetLib
+  parclusterLib
+  )
+
+
+
+

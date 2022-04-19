@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
 	int n = ptrs.size();
 
 	parlay::sequence<int> depPtr(n,-1);
-	// std::cout<<"preprocessing time: "<<time.get_next()<<std::endl;
+	std::cout<<"preprocessing time: "<<time.get_next()<<std::endl;
 
 	parlay::parallel_for(0, n, [&](int i){
 		auto compDist = [&](size_t a, size_t b){
@@ -47,9 +47,9 @@ int main(int argc, char* argv[]) {
 		});
 	});
 
-	// std::cout<<"update query time: "<<time.get_next()<<std::endl;
-	for(int i=0;i<n;i++){
-		std::cout<<i<<"  ;  "<<ptrs[i][0]<<" "<<ptrs[i][1]<<":"<<ptrs[depPtr[i]][0]<<" "<<ptrs[depPtr[i]][1]<<"  ;  "<<depPtr[i]<<" ; "<<ptrs[i].dist(ptrs[depPtr[i]])<<std::endl;
-	}
+	std::cout<<"update query time: "<<time.get_next()<<std::endl;
+	// for(int i=0;i<n;i++){
+	// 	std::cout<<i<<"  ;  "<<ptrs[i][0]<<" "<<ptrs[i][1]<<":"<<ptrs[depPtr[i]][0]<<" "<<ptrs[depPtr[i]][1]<<"  ;  "<<depPtr[i]<<" ; "<<ptrs[i].dist(ptrs[depPtr[i]])<<std::endl;
+	// }
 
 }

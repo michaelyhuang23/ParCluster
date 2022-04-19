@@ -40,30 +40,20 @@ int main(int argc, char* argv[]) {
 	});
 	parlay::sequence<int> backLoc = parlay::filter(transition, [&](int i){return i>-1;});
 	int m = backLoc.size();
-	// for(int i=0;i<backLoc.size();i++)
-	// 	std::cout<<backLoc[i]<<" ";
-	// std::cout<<std::endl;
 
 	if(m == 1){
 		parlay::parallel_for(0,n,[&](int i){
 			depPtr[i] = -1;
 		});
 
-		for(int i=0;i<n;i++){
-			std::cout<<i<<"  ;  "<<ptrs[i][0]<<" "<<ptrs[i][1]<<":"<<ptrs[depPtr[i]][0]<<" "<<ptrs[depPtr[i]][1]<<"  ;  "<<depPtr[i]<<" ; "<<ptrs[i].dist(ptrs[depPtr[i]])<<std::endl;
-		}
 		return 1;
 	}
 
 	pargeo::pdKdTree::tree<dim, pointD>* root = pargeo::pdKdTree::build<dim, pointD>(sptrs, true, 16);
 	root->pargeo::pdKdTree::node<dim, pointD>::initParallel();
 
-	// std::cout<<"preprocessing time: "<<time.get_next()<<std::endl;
+	std::cout<<"preprocessing time: "<<time.get_next()<<std::endl;
 
-	// for(int i=backLoc[m-2]+1; i<n; i++){
-	// 	depPtr[i] = -1;
-	// 	root->activateItem(i);
-	// }
 	parlay::parallel_for(backLoc[m-2]+1, n, [&](int i){
 		depPtr[i] = -1;
 		root->activateItem(i);
@@ -73,13 +63,6 @@ int main(int argc, char* argv[]) {
 		int st = 0, et = backLoc[i];
 		if(i>0) st = backLoc[i-1]+1;
 
-		// for(int i=st;i<et+1;i++){
-		// 	pointD* ptr = root->NearestNeighbor(i);
-		// 	if(ptr)
-		// 		depPtr[i] = ptr->attribute;
-		// 	else
-		// 		depPtr[i] = -1;
-		// }
 		parlay::parallel_for(st, et+1, [&](int i){
 			pointD* ptr = root->NearestNeighbor(i);
 			if(ptr)
@@ -88,19 +71,16 @@ int main(int argc, char* argv[]) {
 				depPtr[i] = -1;
 		});
 
-		// for(int i=st;i<et+1;i++){
-		// 	root->activateItem(i);
-		// }
 		parlay::parallel_for(st, et+1, [&](int i){
 			root->activateItem(i);
 		});
 	}
 
-	// std::cout<<"update query time: "<<time.get_next()<<std::endl;
+	std::cout<<"update query time: "<<time.get_next()<<std::endl;
 
-	for(int i=0;i<n;i++){
-		std::cout<<i<<"  ;  "<<ptrs[i][0]<<" "<<ptrs[i][1]<<":"<<ptrs[depPtr[i]][0]<<" "<<ptrs[depPtr[i]][1]<<"  ;  "<<depPtr[i]<<" ; "<<ptrs[i].dist(ptrs[depPtr[i]])<<std::endl;
-	}
+	// for(int i=0;i<n;i++){
+	// 	std::cout<<i<<"  ;  "<<ptrs[i][0]<<" "<<ptrs[i][1]<<":"<<ptrs[depPtr[i]][0]<<" "<<ptrs[depPtr[i]][1]<<"  ;  "<<depPtr[i]<<" ; "<<ptrs[i].dist(ptrs[depPtr[i]])<<std::endl;
+	// }
 
 }
 
