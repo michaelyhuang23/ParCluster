@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
 
 	time.start();
 
-	parlay::sort_inplace(ptrs, pointD::attComp);
+	parlay::stable_sort_inplace(ptrs, pointD::attComp);
 
 	int n = ptrs.size();
 	parlay::sequence<pointD> sptrs(ptrs);
