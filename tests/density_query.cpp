@@ -1,5 +1,6 @@
 #include<iostream>
 #include<fstream>
+#include<string.h>
 #include<algorithm>
 
 #include "parlay/parallel.h"
@@ -12,7 +13,7 @@
 #include "kdTree/kdTree.h"
 
 static const int dim = 2;
-static const double drange = 20;
+static double drange = 10;
 using point = pargeo::point<dim>;
 using pointD = pargeo::pointD<dim, int>;
 
@@ -39,12 +40,17 @@ parlay::sequence<pointD> compute_densities(parlay::sequence<point>& ptrs){
 
 
 int main(int argc, char* argv[]) {
-	std::ios_base::sync_with_stdio(0);
-
 	pargeo::timer time;
 
-	pargeo::commandLine P(argc, argv, "<inFile>");
-	char* iFile = P.getArgument(0);
+	pargeo::commandLine P(argc, argv, "-r{radiu} -i{inFile} -o{outFile}");
+	drange = P.getOptionDoubleValue("-r", 10);
+	char* iFile = P.getOptionValue("-i");
+	char* oFile = P.getOptionValue("-o");
+
+	std::cout<<"reading from: "<<iFile<<std::endl;
+	std::cout<<"writing to: "<<oFile<<std::endl;
+
+	std::ofstream fout(oFile);
 
 	parlay::sequence<point> ptrs = pargeo::pointIO::readPointsFromFile<point>(iFile);
 
@@ -52,9 +58,12 @@ int main(int argc, char* argv[]) {
 
 	parlay::sequence<pointD> ptrDs = compute_densities(ptrs);
 
+
 	for(int i=0;i<ptrDs.size();i++){
-		std::cout<<ptrDs[i][0]<<" "<<ptrDs[i][1]<<" "<<ptrDs[i].attribute<<'\n';
+		fout<<ptrDs[i][0]<<" "<<ptrDs[i][1]<<" "<<ptrDs[i].attribute<<'\n';
 	}
 
 	std::cout<<"density time: "<<time.get_next()<<std::endl;
+
+	fout.close();
 }

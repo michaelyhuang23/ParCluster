@@ -8,8 +8,8 @@
 #include "pargeo/parseCommandLine.h"
 #include "pargeo/pointIO.h"
 #include "pargeo/point.h"
-#include "pargeo/atomics.h"
 #include "pargeo/getTime.h"
+#include "pseudoDynamicKdTree/pdKdTree.h"
 
 static const int dim = 2;
 using point = pargeo::point<dim>;
@@ -27,29 +27,51 @@ int main(int argc, char* argv[]) {
 	parlay::sequence<pointD> ptrs = pargeo::pointIO::readPointsFromFile<pointD>(iFile);
 
 	time.start();
+	int n = ptrs.size();
+	parlay::sequence<int> depPtr(n);
 
 	parlay::stable_sort_inplace(ptrs, pointD::attComp);
+	parlay::sequence<pointD> sptrs(ptrs);
 
-	int n = ptrs.size();
+	pargeo::pdKdTree::tree<dim, pointD>* root = pargeo::pdKdTree::build<dim, pointD>(sptrs, true, 16);
+	root->pargeo::pdKdTree::node<dim, pointD>::initParallel();
 
-	parlay::sequence<int> depPtr(n,-1);
 	std::cout<<"preprocessing time: "<<time.get_next()<<std::endl;
 
-	parlay::parallel_for(0, n, [&](int i){
-		auto compDist = [&](size_t a, size_t b){
-			if(b == -1) return true;
-			if(a == -1) return false; // -1 is greatest
-			return ptrs[i].dist(ptrs[a]) < ptrs[i].dist(ptrs[b]);
-		};
-		parlay::parallel_for(i+1, n, [&](int j){
-			if(ptrs[i].attribute < ptrs[j].attribute)
-				pargeo::write_min(&depPtr[i], j, compDist);
-		});
-	});
+	
+	for(int i=n-2;i>=0;i--){
+		pointD* ptr = root->NearestNeighbor(i);
+		if(ptr)
+			depPtr[i] = ptr->attribute;
+		else
+			depPtr[i] = -1;
+
+		root->activateItem(i);
+	}
 
 	std::cout<<"update query time: "<<time.get_next()<<std::endl;
+
 	// for(int i=0;i<n;i++){
 	// 	std::cout<<i<<"  ;  "<<ptrs[i][0]<<" "<<ptrs[i][1]<<":"<<ptrs[depPtr[i]][0]<<" "<<ptrs[depPtr[i]][1]<<"  ;  "<<depPtr[i]<<" ; "<<ptrs[i].dist(ptrs[depPtr[i]])<<std::endl;
 	// }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
