@@ -19,14 +19,14 @@ using pointD = pargeo::pointD<dim, int>;
 int main(int argc, char* argv[]) {
 	std::ios_base::sync_with_stdio(0);
 
-	pargeo::timer time;
+	pargeo::timer queryT;
 
 	pargeo::commandLine P(argc, argv, "-i{inFile}");
 	char* iFile = P.getOptionValue("-i");
 
 	parlay::sequence<pointD> ptrs = pargeo::pointIO::readPointsFromFile<pointD>(iFile);
 
-	time.start();
+	// time.start();
 
 	parlay::stable_sort_inplace(ptrs, pointD::attComp);
 
@@ -46,15 +46,17 @@ int main(int argc, char* argv[]) {
 	depPtr[n-1] = -1;
 	depPtr[n-2] = n-1;
 
-	std::cout<<"preprocessing time: "<<time.get_next()<<std::endl;
+	// std::cout<<"preprocessing time: "<<time.get_next()<<std::endl;
 
 	for(int i=n-3;i>=0;--i){
+		queryT.start();
 		auto ret = tree.kNN(ptrs[i], 1);
+		queryT.stop();
 		depPtr[i] = ret[0].attribute;
 		tree.insert(ptrs, i, i+1);
 	}
-
-	std::cout<<"update query time: "<<time.get_next()<<std::endl;
+	std::cout<<"query time: "<<queryT.stop()<<std::endl;
+	// std::cout<<"update query time: "<<time.get_next()<<std::endl;
 	// for(int i=0;i<n;i++){
 		// std::cout<<i<<"  ;  "<<ptrs[i][0]<<" "<<ptrs[i][1]<<":"<<ptrs[depPtr[i]][0]<<" "<<ptrs[depPtr[i]][1]<<"  ;  "<<depPtr[i]<<" ; "<<ptrs[i].dist(ptrs[depPtr[i]])<<std::endl;
 	// }
