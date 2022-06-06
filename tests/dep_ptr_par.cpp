@@ -41,15 +41,15 @@ int main(int argc, char* argv[]) {
 	std::cout<<"preprocess time: "<<prepT.get_next()<<std::endl;
 
 	queryT.start();
-	for(size_t idx = 1;idx<n;idx++){
-		depPtr[idx] = trees.query(idx-1, ptrs[idx]).first;
-	}
-//	parlay::parallel_for(1, n, [&](size_t idx){
-//								   depPtr[idx] = trees.query(idx-1, ptrs[idx]).first;
-//							   });
+//	for(size_t idx = 1;idx<n;idx++){
+//		depPtr[idx] = trees.query(idx-1, ptrs[idx]).first;
+//	}
+	parlay::parallel_for(1, n,
+						 [&](size_t idx){
+							 depPtr[idx] = trees.query(idx-1, ptrs[idx]).first;
+						 });
 
 	std::cout<<"query time: "<<queryT.get_next()<<std::endl;
-	std::cout<<"qc: "<<trees.qc<<std::endl;
 
 
 	for(int i=0;i<n;i++){
