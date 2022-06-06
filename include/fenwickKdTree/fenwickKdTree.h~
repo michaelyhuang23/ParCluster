@@ -1,0 +1,56 @@
+#pragma once
+
+#include <algorithm>
+#include <iostream>
+
+#include "parlay/parallel.h"
+#include "parlay/sequence.h"
+#include "pargeo/point.h"
+#include "kdTree/kdTree.h"
+
+namespace pargeo {
+
+template <int _dim>
+struct fenwickKdTree{
+	using point = pargeo::point<_dim>;
+	using pointD = pargeo::pointD<_dim, int>;
+	int n;
+	parlay::sequence<point> ptrs;
+	parlay::sequence<pargeo::kdTree::node<dim, point>*> trees;
+	static inline size_t lowbit(size_t num){ return num&(-num); }
+	fenwickKdTree(parlay::sequence<point>& ptrs_) : n(ptrs_.size()), ptrs(ptrs_) {
+		trees = parlay::sequence<pargeo::kdTree::node<dim, point>*>(n+1);
+		parlay::parallel_for(1, n+1, [&](size_t i){
+										 size_t st = i-lowbit(i)+1-1;
+										 trees[i] = pargeo::kdTree::build<dim, point>(ptrs.cut(st, i+1-1), tree, 16);
+									 });
+	}
+
+	fenwickKdTree(parlay::sequence<pointD>& ptrsD) : n(ptrsD.size()) {
+		parlay::stable_sort_inplace(ptrsD, pointD::attCompRev);
+		ptrs = parlay::sequence<point>(n);
+		parlay::parallel_for(0, n, [&](size_t i){ ptrs[i] = point(ptrsD[i].coords()); });
+		trees = parlay::sequence<pargeo::kdTree::node<dim, point>*>(n+1);
+		parlay::parallel_for(1, n+1, [&](size_t i){
+										 size_t st = i-lowbit(i)+1-1;
+										 trees[i] = pargeo::kdTree::build<dim, point>(ptrs.cut(st, i+1-1), tree, 16);
+									 });
+	}
+	
+	std::pair<size_t, point> query(int idx, point& q){
+		idx++;
+		double dist = std::numeric_limits<double>::max()/2;
+		size_t oid = -1;
+		for(; idx > 0; idx -= lowbit(idx)){
+			parlay::sequence<point>  ptr = {q};
+			size_t id = pargeo::kdTree::NearestNeighbor(ptr, trees[idx]);
+			if(ptrs[id].dist(q) < dist){
+				dist = ptrs[id].dist(q);
+				oid = id;
+			}
+		}
+		return std::make_pair(oid, ptrs[oid]);
+	}
+};
+
+};
