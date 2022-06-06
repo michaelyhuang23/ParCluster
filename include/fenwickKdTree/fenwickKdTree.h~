@@ -1,22 +1,19 @@
-#include<iostream>
-#include<fstream>
-#include<algorithm>
+#pragma once
+
+#include <algorithm>
+#include <iostream>
 
 #include "parlay/parallel.h"
 #include "parlay/sequence.h"
-#include "parlay/primitives.h"
-#include "pargeo/parseCommandLine.h"
-#include "pargeo/pointIO.h"
 #include "pargeo/point.h"
-#include "pargeo/getTime.h"
 #include "kdTree/kdTree.h"
 
-static const int dim = 2;
-using point = pargeo::point<dim>;
-using pointD = pargeo::pointD<dim, int>;
+namespace pargeo {
 
-
+template <int _dim>
 struct fenwickKdTree{
+	using point = pargeo::point<_dim>;
+	using pointD = pargeo::pointD<_dim, int>;
 	int n;
 	parlay::sequence<point> ptrs;
 	parlay::sequence<pargeo::kdTree::node<dim, point>*> trees;
@@ -56,4 +53,4 @@ struct fenwickKdTree{
 	}
 };
 
-
+};
