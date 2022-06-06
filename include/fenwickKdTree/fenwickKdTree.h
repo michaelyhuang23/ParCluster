@@ -33,12 +33,8 @@ namespace pargeo {
 			double dist = std::numeric_limits<double>::max()/2;
 			point* op = NULL;
 			for(; idx > 0; idx -= lowbit(idx)){
-				point* p = pargeo::kdTree::NearestNeighbor<dim, point>(q, trees[idx]);
+				pargeo::kdTree::NearestNeighbor<dim, point>(q, trees[idx], dist, op);
 				qc++;
-				if(p->dist(q) < dist){
-					dist = p->dist(q);
-					op = p;
-				}
 			}
 			return std::make_pair(op-ptrs.data(), *op);
 		}
