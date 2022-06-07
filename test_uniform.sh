@@ -11,6 +11,7 @@ for((i=1000; i<=100000; i*=10)); do
     ./build/tests/dep_ptr_brute -i dataset/uniform/${i}_dense.txt > results/uniform/brute_${r}_${i}.txt
     ./build/tests/dep_ptr_dyn -i dataset/uniform/${i}_dense.txt > results/uniform/dyn_${r}_${i}.txt
     ./build/tests/dep_ptr_static -i dataset/uniform/${i}_dense.txt > results/uniform/static_${r}_${i}.txt
+	./build/tests/dep_ptr_par -i dataset/uniform/${i}_dense.txt > results/uniform/par_${r}_${i}.txt
 done
 
 for((i=1000; i<=100000; i*=10)); do
@@ -20,6 +21,7 @@ for((i=1000; i<=100000; i*=10)); do
     ./build/tests/dep_ptr_brute -i dataset/uniform/${i}_dense.txt > results/uniform/brute_${r}_${i}.txt
     ./build/tests/dep_ptr_dyn -i dataset/uniform/${i}_dense.txt > results/uniform/dyn_${r}_${i}.txt
     ./build/tests/dep_ptr_static -i dataset/uniform/${i}_dense.txt > results/uniform/static_${r}_${i}.txt
+	./build/tests/dep_ptr_par -i dataset/uniform/${i}_dense.txt > results/uniform/par_${r}_${i}.txt
 done
 
 for((i=1000; i<=100000; i*=10)); do
@@ -29,6 +31,7 @@ for((i=1000; i<=100000; i*=10)); do
     ./build/tests/dep_ptr_brute -i dataset/uniform/${i}_dense.txt > results/uniform/brute_${r}_${i}.txt
     ./build/tests/dep_ptr_dyn -i dataset/uniform/${i}_dense.txt > results/uniform/dyn_${r}_${i}.txt
     ./build/tests/dep_ptr_static -i dataset/uniform/${i}_dense.txt > results/uniform/static_${r}_${i}.txt
+	./build/tests/dep_ptr_par -i dataset/uniform/${i}_dense.txt > results/uniform/par_${r}_${i}.txt
 done
 
 for((i=1000; i<=100000; i*=10)); do
@@ -38,4 +41,5 @@ for((i=1000; i<=100000; i*=10)); do
     ./build/tests/dep_ptr_brute -i dataset/uniform/${i}_dense.txt > results/uniform/brute_${r}_${i}.txt
     ./build/tests/dep_ptr_dyn -i dataset/uniform/${i}_dense.txt > results/uniform/dyn_${r}_${i}.txt
     ./build/tests/dep_ptr_static -i dataset/uniform/${i}_dense.txt > results/uniform/static_${r}_${i}.txt
+	./build/tests/dep_ptr_par -i dataset/uniform/${i}_dense.txt > results/uniform/par_${r}_${i}.txt
 done

@@ -11,6 +11,7 @@ for((i=1000; i<=100000; i*=10)); do
     ./build/tests/dep_ptr_brute -i dataset/simden/${i}_dense.txt > results/simden/brute_${r}_${i}.txt
     ./build/tests/dep_ptr_dyn -i dataset/simden/${i}_dense.txt > results/simden/dyn_${r}_${i}.txt
     ./build/tests/dep_ptr_static -i dataset/simden/${i}_dense.txt > results/simden/static_${r}_${i}.txt
+	./build/tests/dep_ptr_par -i dataset/simden/${i}_dense.txt > results/simden/par_${r}_${i}.txt
 done
 
 for((i=1000; i<=100000; i*=10)); do
@@ -20,6 +21,7 @@ for((i=1000; i<=100000; i*=10)); do
     ./build/tests/dep_ptr_brute -i dataset/simden/${i}_dense.txt > results/simden/brute_${r}_${i}.txt
     ./build/tests/dep_ptr_dyn -i dataset/simden/${i}_dense.txt > results/simden/dyn_${r}_${i}.txt
     ./build/tests/dep_ptr_static -i dataset/simden/${i}_dense.txt > results/simden/static_${r}_${i}.txt
+	./build/tests/dep_ptr_par -i dataset/simden/${i}_dense.txt > results/simden/par_${r}_${i}.txt
 done
 
 for((i=1000; i<=100000; i*=10)); do
@@ -29,5 +31,6 @@ for((i=1000; i<=100000; i*=10)); do
     ./build/tests/dep_ptr_brute -i dataset/simden/${i}_dense.txt > results/simden/brute_${r}_${i}.txt
     ./build/tests/dep_ptr_dyn -i dataset/simden/${i}_dense.txt > results/simden/dyn_${r}_${i}.txt
     ./build/tests/dep_ptr_static -i dataset/simden/${i}_dense.txt > results/simden/static_${r}_${i}.txt
+	./build/tests/dep_ptr_par -i dataset/simden/${i}_dense.txt > results/simden/par_${r}_${i}.txt
 done
 
