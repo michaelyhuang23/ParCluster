@@ -20,10 +20,30 @@ namespace pargeo {
 		static inline size_t lowbit(size_t num){ return num&(-num); }
 		fenwickKdTree(parlay::sequence<point>& ptrs_) : n(ptrs_.size()), ptrs(ptrs_) {
 			trees = parlay::sequence<pargeo::kdTree::node<dim, point>*>(n+1);
-			parlay::parallel_for(1, n+1,
+			for(size_t i=0;(1<<i)<=n;i++){
+				size_t topB = (n-(1<<i))>>(i+1);
+				
+				/*for(size_t idx=0;idx<=topB;idx++){
+					size_t ed = (idx<<(i+1))^(1<<i);
+					size_t st = ed-lowbit(ed)+1-1;
+					trees[ed] = pargeo::kdTree::build<dim, point>(ptrs.cut(st, ed+1-1), true, 16);
+				}*/
+				parlay::parallel_for(0, topB+1, [&](size_t idx){
+					size_t ed = (idx<<(i+1))^(1<<i);
+					size_t st = ed-lowbit(ed)+1-1;
+					trees[ed] = pargeo::kdTree::build<dim, point>(ptrs.cut(st, ed+1-1), true, 16);
+				});
+			}
+			
+			
+			/*for(size_t i=1;i<=n;i++){
+				size_t st = i-lowbit(i)+1-1;
+				trees[i] = pargeo::kdTree::build<dim, point>(ptrs.cut(st, i+1-1), false, 16);
+				}*/
+			/*parlay::parallel_for(1, n+1,
 								 [&](size_t i){
 									 size_t st = i-lowbit(i)+1-1;
-									 trees[i] = pargeo::kdTree::build<dim, point>(ptrs.cut(st, i+1-1), true, 16);});
+									 trees[i] = pargeo::kdTree::build<dim, point>(ptrs.cut(st, i+1-1), false, 16);}, 1);*/
 		}
 	
 		std::pair<size_t, point> query(int idx, point& q){ // query range [0, idx] for item idx
