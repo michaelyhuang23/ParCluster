@@ -1,2 +1,2 @@
-preprocessing time: 0.000818968
-update query time: 1.07267
+preprocessing time: 0.000793934
+update query time: 1.03093

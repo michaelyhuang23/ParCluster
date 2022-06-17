@@ -1,3 +1,3 @@
 reading from: dataset/uniform/10000000.txt
 writing to: dataset/uniform/10000000_dense.txt
-density time: 5467.54
+density time: 5460.76
