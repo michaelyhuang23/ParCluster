@@ -11,9 +11,7 @@
 #include "pargeo/getTime.h"
 #include "dynamicKdTree/dynKdTree.h"
 
-static const int dim = 2;
-using point = pargeo::point<dim>;
-using pointD = pargeo::pointD<dim, int>;
+#include "parameter.h"
 
 
 int main(int argc, char* argv[]) {
