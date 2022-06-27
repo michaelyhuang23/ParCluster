@@ -1,1 +1,2 @@
-query time: 0.759463
+prep time: 0.149202
+query time: 0.74771
