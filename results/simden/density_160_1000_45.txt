@@ -1,3 +1,3 @@
 reading from: dataset/simden/1000.txt
 writing to: dataset/simden/1000_dense.txt
-density time: 0.00173092
+density time: 0.00164199
