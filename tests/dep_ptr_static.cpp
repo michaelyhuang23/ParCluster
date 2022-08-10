@@ -11,21 +11,20 @@
 #include "pargeo/getTime.h"
 #include "pseudoDynamicKdTree/pdKdTree.h"
 
-static const int dim = 2;
-using point = pargeo::point<dim>;
-using pointD = pargeo::pointD<dim, int>;
+#include "parameter.h"
 
 
 int main(int argc, char* argv[]) {
 	std::ios_base::sync_with_stdio(0);
 
-	pargeo::timer queryT, updateT;
+	pargeo::timer queryT, prepT;
 
 	pargeo::commandLine P(argc, argv, "-i{inFile}");
 	char* iFile = P.getOptionValue("-i");
 
 	parlay::sequence<pointD> ptrs = pargeo::pointIO::readPointsFromFile<pointD>(iFile);
 
+	prepT.start();
 	int n = ptrs.size();
 	parlay::sequence<int> depPtr(n);
 
@@ -35,10 +34,12 @@ int main(int argc, char* argv[]) {
 	pargeo::pdKdTree::tree<dim, pointD>* root = pargeo::pdKdTree::build<dim, pointD>(sptrs, true, 16);
 	root->pargeo::pdKdTree::node<dim, pointD>::initParallel();
 
-	depPtr[0] = -1;
-	root->activateItem(0);
+	std::cout<<"prep time: "<<prepT.get_next()<<std::endl;
+	
 	queryT.start();
 
+	depPtr[0] = -1;
+	root->activateItem(0);
 	
 	for(int i=1;i<n;i++){
 		pointD* ptr = root->NearestNeighbor(i);

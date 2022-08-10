@@ -12,9 +12,8 @@
 #include "pseudoDynamicKdTree/pdKdTree.h"
 #include "fenwickKdTree/fenwickKdTree.h"
 
-static const int dim = 2;
-using point = pargeo::point<dim>;
-using pointD = pargeo::pointD<dim, int>;
+#include "parameter.h"
+
 
 int main(int argc, char* argv[]) {
 	std::ios_base::sync_with_stdio(0);

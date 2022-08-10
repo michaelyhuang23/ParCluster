@@ -1,1 +1,2 @@
-query time: 0.000449896
+place holder: 0.00
+total time: 15.9382
