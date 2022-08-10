@@ -128,7 +128,7 @@ pargeo::seedSpreader::internal::vardenSpreader<dim>::next() {
 
 /* Generator implementations */
 
-template <int dim, class pointT = pargeo::point<dim>>
+template <int dim, class pointT>
 parlay::sequence<pointT>
 pargeo::seedSpreader::simdenGenerator(size_t n, double rhoNoise) {
   srand(123);
@@ -154,7 +154,7 @@ pargeo::seedSpreader::simdenGenerator(size_t n, double rhoNoise) {
   return data;
 }
 
-template <int dim, class pointT = pargeo::point<dim>>
+template <int dim, class pointT>
 parlay::sequence<pointT>
 pargeo::seedSpreader::vardenGenerator(size_t n, double rhoNoise) {
   srand(321);
