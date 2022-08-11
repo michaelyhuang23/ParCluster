@@ -54,9 +54,9 @@ int main(int argc, char* argv[]) {
 
 	std::cout<<"query time: "<<queryT.get_next()<<std::endl;
 
-/*	for(int i=0;i<n;i++){
+	for(int i=0;i<n;i++){
 	 	std::cout<<i<<"  ;  "<<ptrs[i][0]<<" "<<ptrs[i][1]<<":"<<ptrs[depPtr[i]][0]<<" "<<ptrs[depPtr[i]][1]<<"  ;  "<<depPtr[i]<<" ; "<<ptrs[i].dist(ptrs[depPtr[i]])<<std::endl;
-		}*/
+		}
 
 }
 
