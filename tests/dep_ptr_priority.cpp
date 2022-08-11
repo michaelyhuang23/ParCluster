@@ -34,26 +34,26 @@ int main(int argc, char* argv[]) {
 	pargeo::psKdTree::tree<dim, pointD>* root = pargeo::psKdTree::build<dim, pointD>(sptrs, true, 16);
 	root->pargeo::psKdTree::node<dim, pointD>::initParallel();
 
-	//std::cout<<"prep time: "<<prepT.get_next()<<std::endl;
+	std::cout<<"prep time: "<<prepT.get_next()<<std::endl;
 
 	queryT.start();
 
 	depPtr[0] = -1;
-	
-	for(int i=1;i<n;i++){
+
+	parlay::parallel_for(0, n, [&](size_t i){
 		pointD* ptr = root->NearestNeighborBounded(i);
 		if(ptr)
 			depPtr[i] = ptr->attribute;
 		else
 			depPtr[i] = -1;
-	}
+	});
 
-	//std::cout<<"query time: "<<queryT.get_next()<<std::endl;
+	std::cout<<"query time: "<<queryT.get_next()<<std::endl;
 
 
-	for(int i=0;i<n;i++){
+	/*for(int i=0;i<n;i++){
 	 	std::cout<<i<<"  ;  "<<ptrs[i][0]<<" "<<ptrs[i][1]<<":"<<ptrs[depPtr[i]][0]<<" "<<ptrs[depPtr[i]][1]<<"  ;  "<<depPtr[i]<<" ; "<<ptrs[i].dist(ptrs[depPtr[i]])<<std::endl;
-		}
+		}*/
 
 }
 
