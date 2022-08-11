@@ -1,3 +1,0 @@
-reading from: dataset/varden/100000.txt
-writing to: dataset/varden/100000_dense.txt
-density time: 0.137293

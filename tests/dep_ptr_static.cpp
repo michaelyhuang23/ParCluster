@@ -11,9 +11,7 @@
 #include "pargeo/getTime.h"
 #include "pseudoDynamicKdTree/pdKdTree.h"
 
-static const int dim = 2;
-using point = pargeo::point<dim>;
-using pointD = pargeo::pointD<dim, int>;
+#include "parameter.h"
 
 
 int main(int argc, char* argv[]) {
@@ -56,7 +54,7 @@ int main(int argc, char* argv[]) {
 
 	std::cout<<"query time: "<<queryT.get_next()<<std::endl;
 
-/*	for(int i=0;i<n;i++){
+	/*for(int i=0;i<n;i++){
 	 	std::cout<<i<<"  ;  "<<ptrs[i][0]<<" "<<ptrs[i][1]<<":"<<ptrs[depPtr[i]][0]<<" "<<ptrs[depPtr[i]][1]<<"  ;  "<<depPtr[i]<<" ; "<<ptrs[i].dist(ptrs[depPtr[i]])<<std::endl;
 		}*/
 

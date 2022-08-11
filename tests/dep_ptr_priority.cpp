@@ -9,8 +9,7 @@
 #include "pargeo/pointIO.h"
 #include "pargeo/point.h"
 #include "pargeo/getTime.h"
-#include "pseudoDynamicKdTree/pdKdTree.h"
-#include "fenwickKdTree/fenwickKdTree.h"
+#include "priorityKdTree/psKdTree.h"
 
 #include "parameter.h"
 
@@ -18,43 +17,46 @@
 int main(int argc, char* argv[]) {
 	std::ios_base::sync_with_stdio(0);
 
-	pargeo::timer prepT, queryT;
+	pargeo::timer queryT, prepT;
 
 	pargeo::commandLine P(argc, argv, "-i{inFile}");
 	char* iFile = P.getOptionValue("-i");
 
-	parlay::sequence<pointD> ptrsD = pargeo::pointIO::readPointsFromFile<pointD>(iFile);
+	parlay::sequence<pointD> ptrs = pargeo::pointIO::readPointsFromFile<pointD>(iFile);
 
 	prepT.start();
-	int n = ptrsD.size();
-	
-	parlay::stable_sort_inplace(ptrsD, pointD::attCompRev);
-	parlay::sequence<point> ptrs(n);
-	parlay::parallel_for(0, n, [&](size_t i){ ptrs[i] = point(ptrsD[i].coords()); });
-		
-	pargeo::fenwickKdTree<dim> trees(ptrs);
-
+	int n = ptrs.size();
 	parlay::sequence<int> depPtr(n);
-	depPtr[0] = -1;
 
-	std::cout<<"preprocess time: "<<prepT.get_next()<<std::endl;
+	parlay::stable_sort_inplace(ptrs, pointD::attCompRev);
+	parlay::sequence<pointD> sptrs(ptrs);
+
+	pargeo::psKdTree::tree<dim, pointD>* root = pargeo::psKdTree::build<dim, pointD>(sptrs, true, 16);
+	root->pargeo::psKdTree::node<dim, pointD>::initParallel();
+
+	std::cout<<"prep time: "<<prepT.get_next()<<std::endl;
 
 	queryT.start();
-//	for(size_t idx = 1;idx<n;idx++){
-//		depPtr[idx] = trees.query(idx-1, ptrs[idx]).first;
-//	}
-	parlay::parallel_for(1, n,
-						 [&](size_t idx){
-							 depPtr[idx] = trees.query(idx-1, ptrs[idx]).first;
-						 });
+
+	depPtr[0] = -1;
+
+	parlay::parallel_for(0, n, [&](size_t i){
+		pointD* ptr = root->NearestNeighborBounded(i);
+		if(ptr)
+			depPtr[i] = ptr->attribute;
+		else
+			depPtr[i] = -1;
+	});
 
 	std::cout<<"query time: "<<queryT.get_next()<<std::endl;
 
 
-/*	for(int i=0;i<n;i++){
+	/*for(int i=0;i<n;i++){
 	 	std::cout<<i<<"  ;  "<<ptrs[i][0]<<" "<<ptrs[i][1]<<":"<<ptrs[depPtr[i]][0]<<" "<<ptrs[depPtr[i]][1]<<"  ;  "<<depPtr[i]<<" ; "<<ptrs[i].dist(ptrs[depPtr[i]])<<std::endl;
 		}*/
+
 }
+
 
 
 
