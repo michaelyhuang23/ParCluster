@@ -1,2 +1,2 @@
-preprocess time: 0.000303984
-query time: 4.88758e-05
+preprocess time: 0.00019598
+query time: 4.91142e-05
