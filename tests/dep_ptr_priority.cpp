@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
 	pargeo::psKdTree::tree<dim, pointD>* root = pargeo::psKdTree::build<dim, pointD>(sptrs, true, 16);
 	root->pargeo::psKdTree::node<dim, pointD>::initParallel();
 
-	std::cout<<"prep time: "<<prepT.get_next()<<std::endl;
+	//std::cout<<"prep time: "<<prepT.get_next()<<std::endl;
 
 	queryT.start();
 
@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
 			depPtr[i] = -1;
 	}
 
-	std::cout<<"query time: "<<queryT.get_next()<<std::endl;
+	//std::cout<<"query time: "<<queryT.get_next()<<std::endl;
 
 
 	for(int i=0;i<n;i++){
