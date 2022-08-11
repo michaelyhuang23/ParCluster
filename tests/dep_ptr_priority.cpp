@@ -42,8 +42,6 @@ int main(int argc, char* argv[]) {
 	
 	for(int i=1;i<n;i++){
 		pointD* ptr = root->NearestNeighborBounded(i);
-
-	
 		if(ptr)
 			depPtr[i] = ptr->attribute;
 		else
