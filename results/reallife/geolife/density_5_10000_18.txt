@@ -1,3 +1,0 @@
-reading from: dataset/reallife/3D_GeoLife_10K.pbbs
-writing to: dataset/reallife/3D_GeoLife_10K_dense
-density time: 0.0120211

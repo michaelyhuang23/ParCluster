@@ -1,3 +1,0 @@
-reading from: dataset/simden/10000.txt
-writing to: dataset/simden/10000_dense.txt
-density time: 0.013855

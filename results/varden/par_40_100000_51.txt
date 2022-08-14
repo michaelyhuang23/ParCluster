@@ -1,2 +1,0 @@
-preprocess time: 0.022469
-query time: 0.00247502

@@ -9,7 +9,7 @@
 #include "pargeo/pointIO.h"
 #include "pargeo/point.h"
 #include "pargeo/getTime.h"
-#include "pseudoDynamicKdTree/pdKdTree.h"
+#include "priorityKdTree/psKdTree.h"
 
 #include "parameter.h"
 
@@ -31,28 +31,25 @@ int main(int argc, char* argv[]) {
 	parlay::stable_sort_inplace(ptrs, pointD::attCompRev);
 	parlay::sequence<pointD> sptrs(ptrs);
 
-	pargeo::pdKdTree::tree<dim, pointD>* root = pargeo::pdKdTree::build<dim, pointD>(sptrs, true, 16);
-	root->pargeo::pdKdTree::node<dim, pointD>::initParallel();
+	pargeo::psKdTree::tree<dim, pointD>* root = pargeo::psKdTree::build<dim, pointD>(sptrs, true, 16);
+	root->pargeo::psKdTree::node<dim, pointD>::initParallel();
 
 	std::cout<<"prep time: "<<prepT.get_next()<<std::endl;
-	
+
 	queryT.start();
 
 	depPtr[0] = -1;
-	root->activateItem(0);
-	
-	for(int i=1;i<n;i++){
-		pointD* ptr = root->NearestNeighbor(i);
-	
+
+	parlay::parallel_for(0, n, [&](size_t i){
+		pointD* ptr = root->NearestNeighborBounded(i);
 		if(ptr)
 			depPtr[i] = ptr->attribute;
 		else
 			depPtr[i] = -1;
-
-		root->activateItem(i);
-	}
+	});
 
 	std::cout<<"query time: "<<queryT.get_next()<<std::endl;
+
 
 	/*for(int i=0;i<n;i++){
 	 	std::cout<<i<<"  ;  "<<ptrs[i][0]<<" "<<ptrs[i][1]<<":"<<ptrs[depPtr[i]][0]<<" "<<ptrs[depPtr[i]][1]<<"  ;  "<<depPtr[i]<<" ; "<<ptrs[i].dist(ptrs[depPtr[i]])<<std::endl;
