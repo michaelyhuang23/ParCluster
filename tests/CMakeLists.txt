@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_executable(test_parlay test_parlay.cpp)
 add_executable(density_query density_query.cpp)
+add_executable(density_query_brute density_query_brute.cpp)
 add_executable(dep_ptr_dyn dep_ptr_dyn.cpp)
 add_executable(dep_ptr_brute dep_ptr_brute.cpp)
 add_executable(dep_ptr_static_batch dep_ptr_static_batch.cpp)
@@ -19,6 +20,10 @@ target_link_libraries(test_parlay
   )
 
 target_link_libraries(density_query 
+  parclusterLib
+  )
+
+target_link_libraries(density_query_brute
   parclusterLib
   )
 
