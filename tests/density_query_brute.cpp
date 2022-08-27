@@ -14,12 +14,6 @@
 
 #include "parameter.h"
 
-static double drange = 10;
-
-
-
-
-
 parlay::sequence<pointD> compute_densities(parlay::sequence<point>& ptrs){
     parlay::sequence<pointD> ptrDs(ptrs.size());
 

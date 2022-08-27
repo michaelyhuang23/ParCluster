@@ -12,6 +12,7 @@ add_executable(dep_ptr_static_batch dep_ptr_static_batch.cpp)
 add_executable(dep_ptr_static dep_ptr_static.cpp)
 add_executable(dep_ptr_priority dep_ptr_priority.cpp)
 add_executable(dep_ptr_par dep_ptr_par.cpp)
+add_executable(dpc_priority dpc_priority.cpp)
 add_executable(uniform_generator uniform_generator.cpp)
 add_executable(seedspread_generator seedspread_generator.cpp)
 
@@ -48,6 +49,10 @@ target_link_libraries(dep_ptr_par
   )
   
 target_link_libraries(dep_ptr_priority
+  parclusterLib
+  )
+
+target_link_libraries(dpc_priority
   parclusterLib
   )
 
