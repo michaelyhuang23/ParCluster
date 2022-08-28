@@ -14,6 +14,7 @@ add_executable(dep_ptr_priority dep_ptr_priority.cpp)
 add_executable(dep_ptr_par dep_ptr_par.cpp)
 add_executable(dpc_priority dpc_priority.cpp)
 add_executable(dpc_static dpc_static.cpp)
+add_executable(dpc_fenwick dpc_fenwick.cpp)
 add_executable(uniform_generator uniform_generator.cpp)
 add_executable(seedspread_generator seedspread_generator.cpp)
 
@@ -58,6 +59,10 @@ target_link_libraries(dpc_priority
   )
 
 target_link_libraries(dpc_static
+  parclusterLib
+  )
+
+target_link_libraries(dpc_fenwick
   parclusterLib
   )
 
