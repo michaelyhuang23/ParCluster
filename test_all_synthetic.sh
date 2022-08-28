@@ -1,0 +1,3 @@
+bash test_priority_synthetic.sh
+bash test_fenwick_synthetic.sh
+bash test_static_synthetic.sh
