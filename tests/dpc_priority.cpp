@@ -13,7 +13,7 @@
 #include "pargeo/getTime.h"
 #include "pargeo/unionFind.h"
 #include "priorityKdTree/psKdTree.h"
-#include "KdTree/KdTree.h"
+#include "kdTree/kdTree.h"
 
 #include "parameter.h"
 
