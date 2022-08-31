@@ -20,7 +20,7 @@
 
 parlay::sequence<pointD> compute_densities(parlay::sequence<point>& ptrs){
 	pargeo::kdTree::node<dim, point>* tree = 
-		pargeo::kdTree::build<dim, point>(ptrs, true, 16);
+		pargeo::kdTree::build<dim, point>(ptrs, true, 1);
 	
 
 	parlay::sequence<pointD> ptrDs(ptrs.size());
