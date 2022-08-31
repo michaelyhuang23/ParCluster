@@ -1,5 +1,5 @@
 R=10000000
-
+r=30
 for((i=1000; i<=$R; i*=10)); do
     echo $i
     ./build/tests/seedspread_generator -s 0 -d 2 $i dataset/simden/${i}.txt
@@ -10,7 +10,7 @@ done
 for((s=30; s<=60; s*=2)); do
 	echo ${s}
 	for((i=1000; i<=$R; i*=10)); do
-		r=100
+		
 		echo $i
 		PARLAY_NUM_THREADS=${s} ./build/tests/dpc_priority -r $r -n 0 -d 200 -i dataset/simden/${i}.txt > results/simden1/priority_${r}_${i}_${s}.txt
 		PARLAY_NUM_THREADS=${s} ./build/tests/dpc_priority -r $r -n 0 -d 200 -i dataset/varden/${i}.txt > results/varden1/priority_${r}_${i}_${s}.txt
@@ -21,7 +21,7 @@ done
 for((s=1; s<=16; s*=2)); do
 	echo ${s}
 	for((i=1000; i<=$R; i*=10)); do
-		r=100
+		
 		echo $i
 		PARLAY_NUM_THREADS=${s} ./build/tests/dpc_priority -r $r -n 0 -d 200 -i dataset/simden/${i}.txt > results/simden1/priority_${r}_${i}_${s}.txt
 		PARLAY_NUM_THREADS=${s} ./build/tests/dpc_priority -r $r -n 0 -d 200 -i dataset/varden/${i}.txt > results/varden1/priority_${r}_${i}_${s}.txt
@@ -36,7 +36,7 @@ done
 for((s=30; s<=60; s*=2)); do
 	echo ${s}
 	for((i=1000; i<=$R; i*=10)); do
-		r=100
+		
 		echo $i
 		PARLAY_NUM_THREADS=${s} ./build/tests/dpc_priority -r $r -n 0 -d 200 -i dataset/simden/${i}.txt > results/simden2/priority_${r}_${i}_${s}.txt
 		PARLAY_NUM_THREADS=${s} ./build/tests/dpc_priority -r $r -n 0 -d 200 -i dataset/varden/${i}.txt > results/varden2/priority_${r}_${i}_${s}.txt
@@ -47,7 +47,7 @@ done
 for((s=1; s<=16; s*=2)); do
 	echo ${s}
 	for((i=1000; i<=$R; i*=10)); do
-		r=100
+		
 		echo $i
 		PARLAY_NUM_THREADS=${s} ./build/tests/dpc_priority -r $r -n 0 -d 200 -i dataset/simden/${i}.txt > results/simden2/priority_${r}_${i}_${s}.txt
 		PARLAY_NUM_THREADS=${s} ./build/tests/dpc_priority -r $r -n 0 -d 200 -i dataset/varden/${i}.txt > results/varden2/priority_${r}_${i}_${s}.txt
@@ -61,7 +61,7 @@ done
 for((s=30; s<=60; s*=2)); do
 	echo ${s}
 	for((i=1000; i<=$R; i*=10)); do
-		r=100
+		
 		echo $i
 		PARLAY_NUM_THREADS=${s} ./build/tests/dpc_priority -r $r -n 0 -d 200 -i dataset/simden/${i}.txt > results/simden3/priority_${r}_${i}_${s}.txt
 		PARLAY_NUM_THREADS=${s} ./build/tests/dpc_priority -r $r -n 0 -d 200 -i dataset/varden/${i}.txt > results/varden3/priority_${r}_${i}_${s}.txt
@@ -72,7 +72,7 @@ done
 for((s=1; s<=16; s*=2)); do
 	echo ${s}
 	for((i=1000; i<=$R; i*=10)); do
-		r=100
+		
 		echo $i
 		PARLAY_NUM_THREADS=${s} ./build/tests/dpc_priority -r $r -n 0 -d 200 -i dataset/simden/${i}.txt > results/simden3/priority_${r}_${i}_${s}.txt
 		PARLAY_NUM_THREADS=${s} ./build/tests/dpc_priority -r $r -n 0 -d 200 -i dataset/varden/${i}.txt > results/varden3/priority_${r}_${i}_${s}.txt
