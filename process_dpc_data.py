@@ -28,7 +28,7 @@ def read_dir(ds, folder_path, dim):
 read_dir(ds, '../DPC/linux/Ex-DPC/results/simden', 2)
 read_dir(ds, '../DPC/linux/Ex-DPC/results/varden', 2)
 read_dir(ds, '../DPC/linux/Ex-DPC/results/uniform', 2)
-read_dir(ds, '../DPC/linux/Ex-DPC/results/reallife/geolife', 3)
+#read_dir(ds, '../DPC/linux/Ex-DPC/results/reallife/geolife', 3)
 
 df = pd.read_csv('data.csv')
 df2 = pd.DataFrame(data=ds)
