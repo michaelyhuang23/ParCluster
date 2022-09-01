@@ -4,8 +4,8 @@ d=100
 for((i=1000; i<=$R; i*=10)); do
     echo $i
     ./build/tests/seedspread_generator -s 0 -d 2 $i dataset/simden/${i}.txt
-	./build/tests/seedspread_generator -s 1 -d 2 $i dataset/varden/${i}.txt
-	./build/tests/uniform_generator -d 2 $i dataset/uniform/${i}.txt
+    ./build/tests/seedspread_generator -s 1 -d 2 $i dataset/varden/${i}.txt
+    ./build/tests/uniform_generator -d 2 $i dataset/uniform/${i}.txt
 done
 
 for((s=30; s<=60; s*=2)); do

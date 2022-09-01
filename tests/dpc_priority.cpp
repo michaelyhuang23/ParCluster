@@ -44,6 +44,7 @@ int main(int argc, char* argv[]) {
 	drange = P.getOptionDoubleValue("-r", 10);
 	noiseCut = P.getOptionDoubleValue("-n", 0);
 	depCut = P.getOptionDoubleValue("-d", 0);
+
 	char* iFile = P.getOptionValue("-i");
 	std::string oFile = P.getOptionValue("-o", std::string(""));
 

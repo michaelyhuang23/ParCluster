@@ -53,7 +53,10 @@ int main(int argc, char* argv[]) {
 	std::cout<<"density time: "<<time.get_next()<<std::endl;
 	
 	for(int i=0;i<ptrDs.size();i++){
-		fout<<ptrDs[i][0]<<" "<<ptrDs[i][1]<<" "<<ptrDs[i].attribute<<'\n';
+	  for(int d=0;d<dim;d++){
+	    fout<<ptrDs[i][d]<<" ";
+	  }
+	  fout<<ptrDs[i].attribute<<'\n';
 	}
 
 	fout.close();
