@@ -1,4 +1,4 @@
-static const int dim = 3;
+static const int dim = 5;
 static double drange = 10;
 static double noiseCut = 0;
 static double depCut = 0;
