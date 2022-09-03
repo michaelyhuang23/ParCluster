@@ -1,3 +1,4 @@
+
 static const int dim = 8;
 static double drange = 10;
 static double noiseCut = 0;
