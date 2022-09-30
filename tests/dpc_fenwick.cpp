@@ -27,7 +27,7 @@ parlay::sequence<pointD> compute_densities(parlay::sequence<point>& ptrs){
 
 	parlay::parallel_for(0, ptrs.size(), [&](size_t i){
 		ptrDs[i] = pointD(ptrs[i].coords(), pargeo::kdTree::rangeCount(tree, ptrs[i], drange));
-	});
+	},1);
 
 	return ptrDs;
 }
@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
 	depPtr[0] = -1;
 	parlay::parallel_for(1, n, [&](size_t idx){
 							 depPtr[idx] = trees.query(idx-1, sptrs[idx]).first;
-						 });
+	});
 	std::cout<<depT.get_next()<<std::endl;
 
 	linkageT.start();

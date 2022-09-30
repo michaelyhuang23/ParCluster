@@ -22,12 +22,13 @@ parlay::sequence<pointD> compute_densities(parlay::sequence<point>& ptrs){
 	pargeo::kdTree::node<dim, point>* tree = 
 		pargeo::kdTree::build<dim, point>(ptrs, true, 1);
 	
-
 	parlay::sequence<pointD> ptrDs(ptrs.size());
+
+	size_t num_workers = parlay::num_workers();
 
 	parlay::parallel_for(0, ptrs.size(), [&](size_t i){
 		ptrDs[i] = pointD(ptrs[i].coords(), pargeo::kdTree::rangeCount(tree, ptrs[i], drange));
-	});
+	}, 1);
 
 	return ptrDs;
 }
@@ -75,7 +76,7 @@ int main(int argc, char* argv[]) {
 			depPtr[i] = ptr->attribute;
 		else
 			depPtr[i] = -1;
-	});
+	},1);
 	std::cout<<depT.get_next()<<std::endl;
 
 	linkageT.start();
