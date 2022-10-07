@@ -178,12 +178,12 @@ namespace pargeo {
 			return std::make_tuple(std::move(Out), m, m1);
 		}
 
-		void recurseCount(parlay::slice<pointT **, pointT **> points, parlay::slice<ballT **, ballT **> regions, intT cutoff=16){
+		void recurseCount(parlay::slice<pointT **, pointT **> points, parlay::slice<ballT **, ballT **> regions, parlay::sequence<intT>& counter, intT cutoff=16){
 			if(points.size()<16){
 				intT k = 0;
 				for(intT i=0;i<regions.size();++i)
 					for(intT j=0;j<points.size();++j)
-						if(regions[i]->contains_point(*points[j])) k++;//regions[i]->count_increase(1);
+						if(regions[i]->contains_point(*points[j])) counter[i]++;
 				return;
 			}
 
@@ -222,6 +222,7 @@ namespace pargeo {
 
 
 			parlay::sequence<ballT *> filtered_regions;
+			parlay::sequence<intT> idmap;
 			size_t filtered_length;
 			if(false){
 				parlay::sequence<bool> retain_flags(regions.size(), 1);
@@ -238,26 +239,35 @@ namespace pargeo {
 				filtered_length = filtered_regions.size();
 			}else{
 				filtered_regions = parlay::sequence<ballT *>(regions.size());
+				idmap = parlay::sequence<intT>(regions.size());
 				int fi = 0;
 				for(size_t i=0;i<regions.size();++i){
 					int relation = regions[i]->compareBox(pMin, pMax);
 					if(relation == 0){ // include
-						regions[i]->count_increase(points.size());
+						counter[i] = points.size();
 					}else if(relation == 1){ // overlap
+						idmap[fi] = i;
 						filtered_regions[fi++] = regions[i];
 					}
 				}
 				filtered_length = fi;
 			}
 
+			parlay::sequence<intT> counter1(filtered_length, 0);
+			parlay::sequence<intT> counter2(filtered_length, 0);
+
 			// Recursive construction
 			parlay::par_do(
 				[&](){ 
-					recurseCount(splitedPoints.cut(0, median), filtered_regions.cut(0, filtered_length), cutoff);
+					recurseCount(splitedPoints.cut(0, median), filtered_regions.cut(0, filtered_length), counter1, cutoff);
 				},
 				[&](){
-					recurseCount(splitedPoints.cut(median, points.size()), filtered_regions.cut(0, filtered_length), cutoff);
-				});
+					recurseCount(splitedPoints.cut(median, points.size()), filtered_regions.cut(0, filtered_length), counter2, cutoff);
+			});
+
+			for(size_t i=0;i<filtered_length;++i){
+				counter[idmap[i]] += counter1[i]+counter2[i];
+			}
 		}
 	};
 

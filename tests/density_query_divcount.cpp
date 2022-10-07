@@ -26,10 +26,11 @@ parlay::sequence<pointD> compute_densities(parlay::sequence<point>& ptrs){
 	parlay::parallel_for(0, ptrs.size(), [&](size_t i){
 		points[i] = &ptrs[i];
 	});
-	divCounter.recurseCount(parlay::make_slice(points), parlay::make_slice(regions), 16);
+	parlay::sequence<int> counter(ptrs.size());
+	divCounter.recurseCount(parlay::make_slice(points), parlay::make_slice(regions), counter, 16);
 	parlay::sequence<pointD> ptrDs(ptrs.size());
 	parlay::parallel_for(0, ptrs.size(), [&](size_t i){
-		ptrDs[i] = pointD(ptrs[i].coords(), regions[i]->count);
+		ptrDs[i] = pointD(ptrs[i].coords(), counter[i]);
 	});
 	return ptrDs;
 }
