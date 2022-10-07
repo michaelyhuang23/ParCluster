@@ -5,6 +5,7 @@
 
 #include "parlay/parallel.h"
 #include "parlay/sequence.h"
+#include "pargeo/atomics.h"
 #include "pargeo/point.h"
 #include "pargeo/ball.h"
 
@@ -172,14 +173,14 @@ namespace pargeo {
 			if(regions.size() * points.size() < 256 || points.size()<16){
 				for(intT i=0;i<regions.size();++i)
 					for(intT j=0;j<points.size();++j)
-						if(regions[i]->contains_point(*points[j])) regions[i]->count++;
+						if(regions[i]->contains_point(*points[j])) regions[i]->count_increase(1);
 				return;
 			}
 
 			parlay::sequence<bool> retain_flags(regions.size(), 1);
 			parlay::parallel_for(0, regions.size(), [&](size_t i){
 				if(regions[i]->contains_rect(pMin, pMax)){
-					regions[i]->count+=points.size();
+					regions[i]->count_increase(points.size());
 					retain_flags[i] = 0;
 				}
 			});
