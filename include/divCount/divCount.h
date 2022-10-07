@@ -168,14 +168,16 @@ namespace pargeo {
 			return std::make_tuple(std::move(Out), m, m1);
 		}
 
-		void recurseCount(parlay::slice<pointT **, pointT **> points, parlay::slice<ballT **, ballT **> regions, pointT& pMin, pointT& pMax, intT cutoff=16){
-			//std::cout<<points.size()<< " "<<regions.size()<<std::endl;
-			if(regions.size() * points.size() < 256 || points.size()<16){
+		void recurseCount(parlay::slice<pointT **, pointT **> points, parlay::slice<ballT **, ballT **> regions, intT cutoff=16){
+			if(points.size()<16){
 				for(intT i=0;i<regions.size();++i)
 					for(intT j=0;j<points.size();++j)
 						if(regions[i]->contains_point(*points[j])) regions[i]->count_increase(1);
 				return;
 			}
+
+			pointT pMin, pMax;
+			boundingBoxParallel(points, pMin, pMax);
 
 			intT k = findWidest(pMin, pMax);
 			double xM = (pMax[k] + pMin[k]) / 2;
@@ -195,59 +197,26 @@ namespace pargeo {
 			//});
 
 			parlay::sequence<ballT *> filtered_regions;
-			if(regions[0]->radius > pMax[k] - pMin[k]){
-				parlay::sequence<bool> retain_flags(regions.size(), 1);
-				parlay::parallel_for(0, regions.size(), [&](size_t i){
-					if(regions[i]->contains_rect(pMin, pMax)){
-						regions[i]->count_increase(points.size());
-						retain_flags[i] = 0;
-					}
-				});
-
-				filtered_regions = parlay::pack(regions, retain_flags);
-				regions = parlay::make_slice(filtered_regions);
-			}
-
-
-
-			pointT pMinL, pMaxL, pMinR, pMaxR;
-			boundingBoxParallel(splitedPoints.cut(0, median), pMinL, pMaxL);
-			boundingBoxParallel(splitedPoints.cut(median, points.size()), pMinR, pMaxR);
-
-			// Now split the regions
-			parlay::sequence<intT> region_flags(regions.size());
-			parlay::parallel_for(0, regions.size(), [&](intT i){
-				if(flags[i] == 1){ // to the left
-					if(regions[i]->intersect_rect(pMinR, pMaxR))
-						region_flags[i] = 1;
-					else
-						region_flags[i] = 0;
-				}else{
-					if(regions[i]->intersect_rect(pMinL, pMaxL))
-						region_flags[i] = 1;
-					else
-						region_flags[i] = 2;
+			parlay::sequence<bool> retain_flags(regions.size(), 1);
+			parlay::parallel_for(0, regions.size(), [&](size_t i){
+				int relation = regions[i]->compareBox(pMin, pMax);
+				if(relation == 2){ // exclude
+					retain_flags[i] = 0;
+				}else if(relation == 0){ // include
+					regions[i]->count_increase(points.size());
+					retain_flags[i] = 0;
 				}
 			});
-			auto regionSplit = split_three(regions, region_flags);
-			parlay::sequence<ballT *> splitedRegions = std::get<0>(regionSplit);
-			intT region_median = std::get<1>(regionSplit);
-			intT region_median1 = std::get<2>(regionSplit);
+			filtered_regions = parlay::pack(regions, retain_flags);
 
 			// Recursive construction
 			parlay::par_do(
 				[&](){ 
-					recurseCount(splitedPoints.cut(0, median), splitedRegions.cut(0, region_median1), pMinL, pMaxL, cutoff);
+					recurseCount(splitedPoints.cut(0, median), parlay::make_slice(filtered_regions), cutoff);
 				},
 				[&](){
-					recurseCount(splitedPoints.cut(median, points.size()), splitedRegions.cut(region_median, splitedRegions.size()), pMinR, pMaxR, cutoff);
+					recurseCount(splitedPoints.cut(median, points.size()), parlay::make_slice(filtered_regions), cutoff);
 				});
-		}
-
-		void recurseCount(parlay::slice<pointT **, pointT **> points, parlay::slice<ballT **, ballT **> regions, intT cutoff=16){
-			pointT pMin, pMax;
-			boundingBoxParallel(points, pMin, pMax);
-			recurseCount(points, regions, pMin, pMax, cutoff);
 		}
 	};
 
