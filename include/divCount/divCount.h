@@ -73,6 +73,16 @@ namespace pargeo {
 
 		}
 
+		void boundingBoxSerial(parlay::slice<pointT **, pointT **> items, pointT& pMin, pointT& pMax){
+			pMin = pointT(items[0]->coords());
+			pMax = pointT(items[0]->coords());
+			for (intT i = 0; i < items.size(); ++i)
+			{
+				minCoords(pMin, items[i][0]);
+				maxCoords(pMax, items[i][0]);
+			}
+		}
+
 		template <typename In_Seq, typename Bool_Seq>
 		auto split_two(In_Seq const &In,
 					   Bool_Seq const &Fl,
@@ -177,7 +187,7 @@ namespace pargeo {
 			}
 
 			pointT pMin, pMax;
-			boundingBoxParallel(points, pMin, pMax);
+			boundingBoxSerial(points, pMin, pMax);
 
 			intT k = findWidest(pMin, pMax);
 			double xM = (pMax[k] + pMin[k]) / 2;
