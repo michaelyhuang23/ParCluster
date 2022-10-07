@@ -197,7 +197,7 @@ namespace pargeo {
 			parlay::sequence<pointT *> splitedPoints;
 			intT median;
 
-			if(false){
+			if(points.size()>2048){
 				parlay::sequence<bool> flags(points.size(),0);
 				parlay::parallel_for(0, points.size(),
 									 [&](intT i)
@@ -265,9 +265,15 @@ namespace pargeo {
 					recurseCount(splitedPoints.cut(median, points.size()), filtered_regions.cut(0, filtered_length), counter2, cutoff);
 			});
 
-			for(size_t i=0;i<filtered_length;++i){
-				counter[idmap[i]] += counter1[i]+counter2[i];
+			if(filtered_length > 2048){
+				parlay::parallel_for(0, filtered_length, [&](size_t i){
+					counter[idmap[i]] += counter1[i]+counter2[i];
+				});
+			}else{
+				for(size_t i=0;i<filtered_length;++i)
+					counter[idmap[i]] += counter1[i]+counter2[i];
 			}
+			
 		}
 	};
 
