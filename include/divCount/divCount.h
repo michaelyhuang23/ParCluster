@@ -221,25 +221,41 @@ namespace pargeo {
 
 
 			parlay::sequence<ballT *> filtered_regions;
-			parlay::sequence<bool> retain_flags(regions.size(), 1);
-			parlay::parallel_for(0, regions.size(), [&](size_t i){
-				int relation = regions[i]->compareBox(pMin, pMax);
-				if(relation == 2){ // exclude
-					retain_flags[i] = 0;
-				}else if(relation == 0){ // include
-					regions[i]->count_increase(points.size());
-					retain_flags[i] = 0;
+			size_t filtered_length;
+			if(false){
+				parlay::sequence<bool> retain_flags(regions.size(), 1);
+				parlay::parallel_for(0, regions.size(), [&](size_t i){
+					int relation = regions[i]->compareBox(pMin, pMax);
+					if(relation == 2){ // exclude
+						retain_flags[i] = 0;
+					}else if(relation == 0){ // include
+						regions[i]->count_increase(points.size());
+						retain_flags[i] = 0;
+					}
+				});
+				filtered_regions = parlay::pack(regions, retain_flags);
+				filtered_length = filtered_regions.size();
+			}else{
+				filtered_regions = parlay::sequence<ballT *>(regions.size());
+				int fi = 0;
+				for(size_t i=0;i<regions.size();++i){
+					int relation = regions[i]->compareBox(pMin, pMax);
+					if(relation == 0){ // include
+						regions[i]->count_increase(points.size());
+					}else if(relation == 1){ // overlap
+						filtered_regions[fi++] = regions[i];
+					}
 				}
-			});
-			filtered_regions = parlay::pack(regions, retain_flags);
+				filtered_length = fi;
+			}
 
 			// Recursive construction
 			parlay::par_do(
 				[&](){ 
-					recurseCount(splitedPoints.cut(0, median), parlay::make_slice(filtered_regions), cutoff);
+					recurseCount(splitedPoints.cut(0, median), filtered_regions.cut(0, filtered_length), cutoff);
 				},
 				[&](){
-					recurseCount(splitedPoints.cut(median, points.size()), parlay::make_slice(filtered_regions), cutoff);
+					recurseCount(splitedPoints.cut(median, points.size()), filtered_regions.cut(0, filtered_length), cutoff);
 				});
 		}
 	};
