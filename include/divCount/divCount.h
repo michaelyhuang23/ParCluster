@@ -180,9 +180,10 @@ namespace pargeo {
 
 		void recurseCount(parlay::slice<pointT **, pointT **> points, parlay::slice<ballT **, ballT **> regions, intT cutoff=16){
 			if(points.size()<16){
+				intT k = 0;
 				for(intT i=0;i<regions.size();++i)
 					for(intT j=0;j<points.size();++j)
-						if(regions[i]->contains_point(*points[j])) regions[i]->count_increase(1);
+						if(regions[i]->contains_point(*points[j])) k++;//regions[i]->count_increase(1);
 				return;
 			}
 
