@@ -6,15 +6,18 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_executable(test_parlay test_parlay.cpp)
 add_executable(density_query density_query.cpp)
 add_executable(density_query_brute density_query_brute.cpp)
+add_executable(density_query_divcount density_query_divcount.cpp)
 add_executable(dep_ptr_dyn dep_ptr_dyn.cpp)
 add_executable(dep_ptr_brute dep_ptr_brute.cpp)
 add_executable(dep_ptr_static_batch dep_ptr_static_batch.cpp)
 add_executable(dep_ptr_static dep_ptr_static.cpp)
 add_executable(dep_ptr_priority dep_ptr_priority.cpp)
 add_executable(dep_ptr_par dep_ptr_par.cpp)
+add_executable(dpc_divcount dpc_divcount.cpp)
 add_executable(dpc_priority dpc_priority.cpp)
 add_executable(dpc_static dpc_static.cpp)
 add_executable(dpc_fenwick dpc_fenwick.cpp)
+
 add_executable(uniform_generator uniform_generator.cpp)
 add_executable(seedspread_generator seedspread_generator.cpp)
 
@@ -27,6 +30,10 @@ target_link_libraries(density_query
   )
 
 target_link_libraries(density_query_brute
+  parclusterLib
+  )
+
+target_link_libraries(density_query_divcount 
   parclusterLib
   )
 
@@ -51,6 +58,10 @@ target_link_libraries(dep_ptr_par
   )
   
 target_link_libraries(dep_ptr_priority
+  parclusterLib
+  )
+
+target_link_libraries(dpc_divcount
   parclusterLib
   )
 
