@@ -192,19 +192,33 @@ namespace pargeo {
 			intT k = findWidest(pMin, pMax);
 			double xM = (pMax[k] + pMin[k]) / 2;
 			// Split points by xM in dim k (parallel)
-			parlay::sequence<bool> flags(points.size(),0);
-			parlay::parallel_for(0, points.size(),
-								 [&](intT i)
-									 {
-									 	if (points[i]->at(k) < xM)
-											flags[i] = 1;
-									 });
-			auto pointSplit = split_two(points, flags);
-			parlay::sequence<pointT *> splitedPoints = pointSplit.first;
-			intT median = pointSplit.second; 
-			//parlay::parallel_for(0, points.size(), [&](size_t i){
-			//	points[i] = splitedPoints[i];
-			//});
+
+			parlay::sequence<pointT *> splitedPoints;
+			intT median;
+
+			if(false){
+				parlay::sequence<bool> flags(points.size(),0);
+				parlay::parallel_for(0, points.size(),
+									 [&](intT i)
+										 {
+										 	if (points[i]->at(k) < xM)
+												flags[i] = 1;
+										 });
+				auto pointSplit = split_two(points, flags);
+				splitedPoints = pointSplit.first;
+				median = pointSplit.second; 
+			}else{
+				splitedPoints = parlay::sequence<pointT *>(points.size());
+				int fi=0, bi=points.size()-1;
+				for(size_t i=0;i<points.size();++i){
+					if(points[i]->at(k) < xM)
+						splitedPoints[fi++] = points[i];
+					else
+						splitedPoints[bi--] = points[i];
+				}
+				median = fi;
+			}
+
 
 			parlay::sequence<ballT *> filtered_regions;
 			parlay::sequence<bool> retain_flags(regions.size(), 1);
