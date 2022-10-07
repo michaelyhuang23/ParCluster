@@ -179,7 +179,7 @@ namespace pargeo {
 		}
 
 		void recurseCount(parlay::slice<pointT **, pointT **> points, parlay::slice<ballT **, ballT **> regions, parlay::sequence<intT>& counter, intT cutoff=16){
-			if(points.size()<16){
+			if(points.size()<16){ // try larger, 400, 4000, try thresholding by multiply
 				intT k = 0;
 				for(intT i=0;i<regions.size();++i)
 					for(intT j=0;j<points.size();++j)
@@ -197,7 +197,7 @@ namespace pargeo {
 			parlay::sequence<pointT *> splitedPoints;
 			intT median;
 
-			if(false){
+			if(false){ // try parallel again after threshold tuning
 				parlay::sequence<bool> flags(points.size(),0);
 				parlay::parallel_for(0, points.size(),
 									 [&](intT i)
@@ -253,7 +253,7 @@ namespace pargeo {
 				filtered_length = fi;
 			}
 
-			parlay::sequence<intT> counter1(filtered_length, 0);
+			parlay::sequence<intT> counter1(filtered_length, 0); // memory allocation might be bad (use slice maybe)
 			parlay::sequence<intT> counter2(filtered_length, 0);
 
 			// Recursive construction
