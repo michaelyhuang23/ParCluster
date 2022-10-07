@@ -177,18 +177,6 @@ namespace pargeo {
 				return;
 			}
 
-			parlay::sequence<bool> retain_flags(regions.size(), 1);
-			parlay::parallel_for(0, regions.size(), [&](size_t i){
-				if(regions[i]->contains_rect(pMin, pMax)){
-					regions[i]->count_increase(points.size());
-					retain_flags[i] = 0;
-				}
-			});
-
-			auto filtered_regions = parlay::pack(regions, retain_flags);
-
-
-
 			intT k = findWidest(pMin, pMax);
 			double xM = (pMax[k] + pMin[k]) / 2;
 			// Split points by xM in dim k (parallel)
@@ -206,32 +194,42 @@ namespace pargeo {
 			//	points[i] = splitedPoints[i];
 			//});
 
+			parlay::sequence<ballT *> filtered_regions;
+			if(regions[0]->radius > pMax[k] - pMin[k]){
+				parlay::sequence<bool> retain_flags(regions.size(), 1);
+				parlay::parallel_for(0, regions.size(), [&](size_t i){
+					if(regions[i]->contains_rect(pMin, pMax)){
+						regions[i]->count_increase(points.size());
+						retain_flags[i] = 0;
+					}
+				});
 
-			if (median == 0 || median == points.size()) // consider getting rid of this
-			{
-			//	median = (points.size() / 2.0);
+				filtered_regions = parlay::pack(regions, retain_flags);
+				regions = parlay::make_slice(filtered_regions);
 			}
+
+
 
 			pointT pMinL, pMaxL, pMinR, pMaxR;
 			boundingBoxParallel(splitedPoints.cut(0, median), pMinL, pMaxL);
 			boundingBoxParallel(splitedPoints.cut(median, points.size()), pMinR, pMaxR);
 
 			// Now split the regions
-			parlay::sequence<intT> region_flags(filtered_regions.size());
-			parlay::parallel_for(0, filtered_regions.size(), [&](intT i){
+			parlay::sequence<intT> region_flags(regions.size());
+			parlay::parallel_for(0, regions.size(), [&](intT i){
 				if(flags[i] == 1){ // to the left
-					if(filtered_regions[i]->intersect_rect(pMinR, pMaxR))
+					if(regions[i]->intersect_rect(pMinR, pMaxR))
 						region_flags[i] = 1;
 					else
 						region_flags[i] = 0;
 				}else{
-					if(filtered_regions[i]->intersect_rect(pMinL, pMaxL))
+					if(regions[i]->intersect_rect(pMinL, pMaxL))
 						region_flags[i] = 1;
 					else
 						region_flags[i] = 2;
 				}
 			});
-			auto regionSplit = split_three(filtered_regions, region_flags);
+			auto regionSplit = split_three(regions, region_flags);
 			parlay::sequence<ballT *> splitedRegions = std::get<0>(regionSplit);
 			intT region_median = std::get<1>(regionSplit);
 			intT region_median1 = std::get<2>(regionSplit);
