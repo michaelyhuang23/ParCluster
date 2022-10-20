@@ -179,11 +179,12 @@ namespace pargeo {
 		}
 
 		void recurseCount(parlay::slice<pointT **, pointT **> points, parlay::slice<ballT **, ballT **> regions, parlay::sequence<intT>& counter, intT cutoff=16){
+			if(regions.size() == 0) return;
 			if(points.size()<16){ // try larger, 400, 4000, try thresholding by multiply
-				intT k = 0;
-				for(intT i=0;i<regions.size();++i)
+				for(intT i=0; i<regions.size(); ++i){
 					for(intT j=0;j<points.size();++j)
 						if(regions[i]->contains_point(*points[j])) counter[i]++;
+				}
 				return;
 			}
 
@@ -198,13 +199,14 @@ namespace pargeo {
 			intT median;
 
 			if(false){ // try parallel again after threshold tuning
+				// slowness of parallel method is mostly the additional work of the weird filter thing.
 				parlay::sequence<bool> flags(points.size(),0);
 				parlay::parallel_for(0, points.size(),
 									 [&](intT i)
 										 {
 										 	if (points[i]->at(k) < xM)
 												flags[i] = 1;
-										 });
+										 }, 1024);
 				auto pointSplit = split_two(points, flags);
 				splitedPoints = pointSplit.first;
 				median = pointSplit.second; 
@@ -231,10 +233,10 @@ namespace pargeo {
 					if(relation == 2){ // exclude
 						retain_flags[i] = 0;
 					}else if(relation == 0){ // include
-						regions[i]->count_increase(points.size());
+						counter[i] = points.size();
 						retain_flags[i] = 0;
 					}
-				});
+				},1024);
 				filtered_regions = parlay::pack(regions, retain_flags);
 				filtered_length = filtered_regions.size();
 			}else{
@@ -265,7 +267,7 @@ namespace pargeo {
 					recurseCount(splitedPoints.cut(median, points.size()), filtered_regions.cut(0, filtered_length), counter2, cutoff);
 			});
 
-			if(filtered_length > 2048){
+			if(true){
 				parlay::parallel_for(0, filtered_length, [&](size_t i){
 					counter[idmap[i]] += counter1[i]+counter2[i];
 				});

@@ -2,7 +2,7 @@
 #include "pargeo/point.h"
 #include "pargeo/ball.h"
 
-static const int dim = 10;
+static const int dim = 3;
 static double drange = 10;
 static double noiseCut = 0;
 static double depCut = 0;
