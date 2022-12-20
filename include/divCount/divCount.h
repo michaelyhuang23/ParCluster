@@ -185,7 +185,6 @@ namespace pargeo {
 				for(intT i=0;i<regions.size();++i)
 					for(intT j=0;j<points.size();++j)
 						if(regions[i]->contains_point(*points[j])) counter[i]++;
-				}
 				return;
 			}
 
