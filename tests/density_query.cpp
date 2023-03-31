@@ -51,13 +51,18 @@ int main(int argc, char* argv[]) {
 	parlay::sequence<pointD> ptrDs = compute_densities(ptrs);
 
 	std::cout<<"density time: "<<time.get_next()<<std::endl;
-	
-	for(int i=0;i<ptrDs.size();i++){
+
+	long long sum = 0;
+	for(size_t i=0;i<ptrDs.size();i++){
 	  for(int d=0;d<dim;d++){
 	    fout<<ptrDs[i][d]<<" ";
 	  }
 	  fout<<ptrDs[i].attribute<<'\n';
+	  sum += ptrDs[i].attribute;
 	}
+
+	std::cout<<"average density: "<<(double)sum/ptrDs.size()<<std::endl;
+	std::cout<<"average percentage: "<<(double)sum/ptrDs.size()/ptrDs.size()<<std::endl;
 
 	fout.close();
 }
