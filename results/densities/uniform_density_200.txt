@@ -1,0 +1,5 @@
+reading from: dataset/uniform/10000000.txt
+writing to: out1
+density time: 46.6118
+average density: 30578
+average percentage: 0.0030578

@@ -1,0 +1,5 @@
+reading from: dataset/reallife/HT.pbbs
+writing to: out1
+density time: 0.332317
+average density: 1428.4
+average percentage: 0.00153758

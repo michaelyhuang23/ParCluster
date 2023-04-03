@@ -1,0 +1,5 @@
+reading from: dataset/varden/10000000.txt
+writing to: out1
+density time: 10.3212
+average density: 7840.75
+average percentage: 0.000784075

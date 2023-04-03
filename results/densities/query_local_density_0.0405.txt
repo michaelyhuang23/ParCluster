@@ -1,0 +1,5 @@
+reading from: dataset/reallife/query.pbbs
+writing to: out1
+density time: 0.0197899
+average density: 1949.13
+average percentage: 0.0389834

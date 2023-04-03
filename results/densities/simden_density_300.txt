@@ -1,0 +1,5 @@
+reading from: dataset/simden/10000000.txt
+writing to: out1
+density time: 11.0591
+average density: 12679.4
+average percentage: 0.00126794

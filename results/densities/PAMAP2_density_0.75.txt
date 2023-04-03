@@ -1,0 +1,5 @@
+reading from: dataset/reallife/PAMAP2.dat
+writing to: out1
+density time: 0.20038
+average density: 596.811
+average percentage: 0.00229763

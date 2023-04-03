@@ -1,0 +1,5 @@
+reading from: dataset/reallife/sensor5.dat
+writing to: out1
+density time: 3.01607
+average density: 176589
+average percentage: 0.0459488

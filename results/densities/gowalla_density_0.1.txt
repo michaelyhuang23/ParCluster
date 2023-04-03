@@ -1,0 +1,5 @@
+reading from: dataset/reallife/gowalla.pbbs
+writing to: out1
+density time: 0.260871
+average density: 2395.32
+average percentage: 0.00190673

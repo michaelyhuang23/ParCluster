@@ -1,0 +1,5 @@
+reading from: dataset/reallife/3D_GeoLife_24M.pbbs
+writing to: out1
+density time: 8.57602
+average density: 606430
+average percentage: 0.0243772

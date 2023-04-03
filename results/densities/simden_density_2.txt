@@ -1,0 +1,2 @@
+reading from: dataset/simden/10000000.txt
+writing to: 
