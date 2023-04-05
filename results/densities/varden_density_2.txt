@@ -1,2 +1,0 @@
-reading from: dataset/varden/10000000.txt
-writing to: 
