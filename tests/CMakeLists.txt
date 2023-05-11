@@ -15,6 +15,7 @@ add_executable(dep_ptr_priority dep_ptr_priority.cpp)
 add_executable(dep_ptr_par dep_ptr_par.cpp)
 add_executable(dpc_divcount dpc_divcount.cpp)
 add_executable(dpc_priority dpc_priority.cpp)
+add_executable(dpc_alternate dpc_alternate.cpp)
 add_executable(dpc_static dpc_static.cpp)
 add_executable(dpc_fenwick dpc_fenwick.cpp)
 
@@ -66,6 +67,10 @@ target_link_libraries(dpc_divcount
   )
 
 target_link_libraries(dpc_priority
+  parclusterLib
+  )
+
+target_link_libraries(dpc_alternate
   parclusterLib
   )
 
