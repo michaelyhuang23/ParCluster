@@ -49,12 +49,15 @@ int main(int argc, char* argv[]) {
 	char* iFile = P.getOptionValue("-i");
 	std::string oFile = P.getOptionValue("-o", std::string(""));
 
+	std::cout << "num_thread: " << parlay::num_workers() << std::endl;
+
 	parlay::sequence<point> ptrs = pargeo::pointIO::readPointsFromFile<point>(iFile);
 	int n = ptrs.size();
+	std::cout << "n: " << n << std::endl;
 	
 	densityT.start();
 	parlay::sequence<pointD> ptrDs = compute_densities(ptrs);
-	std::cout<<densityT.get_next()<<std::endl;
+	std::cout<< "density: "<<densityT.get_next()<<std::endl;
 
 	ptrDs = parlay::filter(ptrDs, [&](pointD ptr){
 		if(ptr.attribute >= noiseCut) return true;
@@ -77,7 +80,7 @@ int main(int argc, char* argv[]) {
 		else
 			depPtr[i] = -1;
 	},1);
-	std::cout<<depT.get_next()<<std::endl;
+	std::cout<< "dependent: "<< depT.get_next()<<std::endl;
 
 	linkageT.start();
 	pargeo::unionFind<int> UF(n);
@@ -89,7 +92,7 @@ int main(int argc, char* argv[]) {
 	parlay::parallel_for(0, n, [&](int i){
 		cluster[i] = UF.find(i);
 	});
-	std::cout<<linkageT.get_next()<<std::endl;
+	std::cout<< "link:" <<linkageT.get_next()<<std::endl;
 
 	if(oFile.size()>0){
 		std::ofstream fout(oFile);

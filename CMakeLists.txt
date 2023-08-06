@@ -6,16 +6,23 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 option(USE_PARALLEL "Parallel scheduler" ON)
+option(DEBUG "debug" OFF)
 option(USE_WARNINGS "Warning flags" OFF)
 
 if (USE_WARNINGS)
   set(EXTRA_FLAGS "-Wall -Wextra")
 endif()
 
+if(DEBUG)
+  add_definitions(-DDEBUG_MODE)
+  set(CMAKE_BUILD_TYPE Debug)
+  set(CMAKE_CXX_FLAGS "-DPARLAY_SEQUENTIAL -mcx16 -g -fPIC ${EXTRA_FLAGS}")
+else()
 if(USE_PARALLEL)
   set(CMAKE_CXX_FLAGS "-DHOMEGROWN -pthread -mcx16 -O3 -DNDEBUG -fPIC ${EXTRA_FLAGS}")
 else()
   set(CMAKE_CXX_FLAGS "-DPARLAY_SEQUENTIAL -mcx16 -O3 -DNDEBUG -fPIC ${EXTRA_FLAGS}")
+endif()
 endif()
 
 message(STATUS "--------------- General configuration -------------")
