@@ -42,7 +42,7 @@ parlay::sequence<pointF> compute_densities(parlay::sequence<point>& ptrs, int K)
 int main(int argc, char* argv[]) {
 	std::ios_base::sync_with_stdio(0);
 
-	pargeo::timer densityT, depT, linkageT;
+	pargeo::timer densityT, depT, linkageT, totalT;
 
 	pargeo::commandLine P(argc, argv, "-n{noiseCut} -d{depCut} -i{inFile} -k{densityK} -o{outFile}");
 	noiseCut = P.getOptionDoubleValue("-n", 0);
@@ -53,12 +53,14 @@ int main(int argc, char* argv[]) {
 	std::string oFile = P.getOptionValue("-o", std::string(""));
 	std::string dFile = P.getOptionValue("-decision", std::string(""));
 
+	std::cout << "num_thread: " << parlay::num_workers() << std::endl;
+
 	parlay::sequence<point> ptrs = pargeo::pointIO::readPointsFromFile<point>(iFile);
 	int n = ptrs.size();
 	
-	densityT.start();
+	densityT.start(); totalT.start();
 	parlay::sequence<pointF> ptrDs = compute_densities(ptrs, K);
-	std::cout<<densityT.get_next()<<std::endl;
+	std::cout<< "density: "<<densityT.get_next()<<std::endl;
 
 	depT.start();
 	parlay::sequence<int> depPtr(n);
@@ -77,13 +79,7 @@ int main(int argc, char* argv[]) {
 		else
 			depPtr[inverseMap[i]] = -1;
 	},1);
-	std::cout<<depT.get_next()<<std::endl;
-
-	if(dFile.size()>0){
-		std::ofstream fout(dFile);
-		for(int i=0;i<n;i++) fout<<sptrs[i].attribute<<" "<<sptrs[i].dist(sptrs[depPtr[i]])<<'\n';
-		fout.close();
-	}
+	std::cout<< "dependent: "<< depT.get_next()<<std::endl;
 
 	linkageT.start();
 	pargeo::unionFind<int> UF(n);
@@ -97,7 +93,15 @@ int main(int argc, char* argv[]) {
 	parlay::parallel_for(0, n, [&](int i){
 		cluster[i] = UF.find(i);
 	});
-	std::cout<<linkageT.get_next()<<std::endl;
+	std::cout<< "link:" <<linkageT.get_next()<<std::endl;
+	std::cout<< "total:" <<totalT.get_next()<<std::endl;
+
+
+	if(dFile.size()>0){
+		std::ofstream fout(dFile);
+		for(int i=0;i<n;i++) fout<<sptrs[i].attribute<<" "<<sptrs[i].dist(sptrs[depPtr[i]])<<'\n';
+		fout.close();
+	}
 
 	if(oFile.size()>0){
 		std::ofstream fout(oFile);
