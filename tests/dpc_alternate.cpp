@@ -24,14 +24,12 @@ parlay::sequence<pointF> compute_densities(parlay::sequence<point>& ptrs, int K)
 	
 	parlay::sequence<pointF> ptrDs(ptrs.size());
 
-	size_t num_workers = parlay::num_workers();
-
 	auto knns = pargeo::origKdTree::batchKnn(ptrs, K, tree);
 
 	parlay::parallel_for(0, ptrs.size(), [&](size_t i){
 		float dist = ptrs[knns[i * K + K - 1]].dist(ptrs[i]);
-		ptrDs[i] = pointF(ptrs[i].coords(), 1/dist);
-	}, 1);
+		ptrDs[i] = pointF(ptrs[i].coords(), 1.0/dist);
+	});
 
 	return ptrDs;
 }
@@ -57,6 +55,7 @@ int main(int argc, char* argv[]) {
 
 	parlay::sequence<point> ptrs = pargeo::pointIO::readPointsFromFile<point>(iFile);
 	int n = ptrs.size();
+	std::cout << "n: " << n << std::endl;
 	
 	densityT.start(); totalT.start();
 	parlay::sequence<pointF> ptrDs = compute_densities(ptrs, K);
@@ -84,8 +83,10 @@ int main(int argc, char* argv[]) {
 	linkageT.start();
 	pargeo::unionFind<int> UF(n);
 	parlay::parallel_for(0, n, [&](int i){
-		if(depPtr[i] != -1 && (sptrs[i].attribute < noiseCut || sptrs[i].distSqr(sptrs[depPtr[i]]) < depCut * depCut)){
-			UF.link(i, depPtr[i]);
+		if(sptrs[i].attribute >= noiseCut){
+			if(depPtr[i] != -1 && (sptrs[i].distSqr(sptrs[depPtr[i]]) < depCut * depCut)){
+				UF.link(i, depPtr[i]);
+			}
 		}
 	});
 
