@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(parcluster)
+project(parDpc)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -37,6 +37,20 @@ message(STATUS "CMAKE_EXE_LINKER_FLAGS          ${CMAKE_CXX_LINKER_FLAGS}")
 message(STATUS "CMAKE_INSTALL_PREFIX:           ${CMAKE_INSTALL_PREFIX}" )
 
 # -------------------------------------------------
+# Include parlay
+
+include(FetchContent)
+FetchContent_Declare(parlaylib
+  GIT_REPOSITORY  https://github.com/cmuparlay/parlaylib.git
+  GIT_TAG         master
+)
+FetchContent_GetProperties(parlaylib)
+if(NOT parlaylib_POPULATED)
+  FetchContent_Populate(parlaylib)  
+  add_subdirectory(${parlaylib_SOURCE_DIR} EXCLUDE_FROM_ALL)
+endif()
+
+# -------------------------------------------------
 # Add sub directories
 
 add_subdirectory(src)
@@ -44,9 +58,10 @@ add_subdirectory(src)
 add_subdirectory(tests)
 
 # -------------------------------------------------
+# Expose parDpcLib
 
-project(parclusterLib)
+project(parDpc)
 
-add_library(parclusterLib INTERFACE)
+add_library(parDpc INTERFACE)
 
-target_include_directories(parclusterLib INTERFACE include)
+target_include_directories(parDpc INTERFACE include)

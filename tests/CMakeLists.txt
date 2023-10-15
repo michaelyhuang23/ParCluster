@@ -23,72 +23,72 @@ add_executable(uniform_generator uniform_generator.cpp)
 add_executable(seedspread_generator seedspread_generator.cpp)
 
 target_link_libraries(test_parlay
-  parclusterLib
+  parDpc
   )
 
 target_link_libraries(density_query 
-  parclusterLib
+  parDpc
   )
 
 target_link_libraries(density_query_brute
-  parclusterLib
+  parDpc
   )
 
 target_link_libraries(density_query_divcount 
-  parclusterLib
+  parDpc
   )
 
 target_link_libraries(dep_ptr_brute
-  parclusterLib
+  parDpc
   )
 
 target_link_libraries(dep_ptr_dyn
-  parclusterLib
+  parDpc
   )
 
 target_link_libraries(dep_ptr_static_batch
-  parclusterLib
+  parDpc
   )
 
 target_link_libraries(dep_ptr_static
-  parclusterLib
+  parDpc
   )
 
 target_link_libraries(dep_ptr_par
-  parclusterLib
+  parDpc
   )
   
 target_link_libraries(dep_ptr_priority
-  parclusterLib
+  parDpc
   )
 
 target_link_libraries(dpc_divcount
-  parclusterLib
+  parDpc
   )
 
 target_link_libraries(dpc_priority
-  parclusterLib
+  parDpc
   )
 
 target_link_libraries(dpc_alternate
-  parclusterLib
+  parDpc
   )
 
 target_link_libraries(dpc_static
-  parclusterLib
+  parDpc
   )
 
 target_link_libraries(dpc_fenwick
-  parclusterLib
+  parDpc
   )
 
 target_link_libraries(uniform_generator
-  parclusterLib
+  parDpc
   )
 
 target_link_libraries(seedspread_generator
   datasetLib
-  parclusterLib
+  parDpc
   )
 
 
