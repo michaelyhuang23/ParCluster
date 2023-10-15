@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
   } else if (dim == 128) {
     DPC::dpc_sddp<128>(data, oFile, dFile, n, K, noiseCut, depCut);
   } else {
-    std::cout << "Unsupported dimension \n";
+    std::cout << "Unsupported dimension, dim = "<< dim << "\n";
     exit(1);
   }
   free(data);
