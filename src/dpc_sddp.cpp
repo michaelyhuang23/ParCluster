@@ -132,7 +132,9 @@ ClusteringResult dpc_sddp(double *data, std::string oFile, std::string dFile,
 
 } // namespace DPC
 
-template DPC::ClusteringResult  DPC::dpc_sddp<2>(double *, std::string, std::string,
-                                      std::size_t, double, double, double);
-template DPC::ClusteringResult  DPC::dpc_sddp<128>(double *, std::string, std::string,
-                                      std::size_t, double, double, double);
+template DPC::ClusteringResult DPC::dpc_sddp<2>(double *, std::string,
+                                                std::string, std::size_t,
+                                                double, double, double);
+template DPC::ClusteringResult DPC::dpc_sddp<128>(double *, std::string,
+                                                  std::string, std::size_t,
+                                                  double, double, double);

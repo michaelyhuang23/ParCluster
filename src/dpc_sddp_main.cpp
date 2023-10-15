@@ -33,4 +33,5 @@ int main(int argc, char *argv[]) {
     std::cout << "Unsupported dimension \n";
     exit(1);
   }
+  free(data);
 }
