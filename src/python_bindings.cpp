@@ -67,7 +67,7 @@ NB_MODULE(par_dpc_ext, m) {
   m.doc() = "Module for Parallel DPC clustering";
 
   // Don't want to allow conversion since then it will copy
-  m.def("dpc_sddp_numpy", &dpc_sddp_numpy, "data"_a.noconvert(), "K"_a,
+  m.def("dpc_sddp_numpy", &dpc_sddp_numpy, "data"_a.noconvert(), "K"_a = 6,
         "output_path"_a = "", "decision_graph_path"_a = "", "noiseCut"_a = 0,
         "depCut"_a = 0,
         "This function clusters the passed in numpy data using SDDP and "
@@ -75,7 +75,7 @@ NB_MODULE(par_dpc_ext, m) {
         "ClusteringResult object with the clusters and metadata about the "
         "clustering process.");
 
-  m.def("dpc_sddp_filename", &dpc_sddp_filename, "data_path"_a, "K"_a,
+  m.def("dpc_sddp_filename", &dpc_sddp_filename, "data_path"_a, "K"_a = 6,
         "output_path"_a = "", "decision_graph_path"_a = "", "noiseCut"_a = 0,
         "depCut"_a = 0,
         "This function clusters the passed in data file name using SDDP and "
