@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <string>
 #include <system_error>
+#include <unordered_map>
 #include <vector>
 
 namespace DPC {
@@ -95,4 +96,9 @@ inline void load_text_file(const std::string &text_file, double *&data,
   }
   std::cout << " done." << std::endl;
 }
+
+struct ClusteringResult {
+  std::unordered_map<std::string, double> output_metadata;
+  std::vector<int> clusters;
+};
 } // namespace DPC
